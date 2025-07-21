@@ -1,0 +1,28 @@
+<!-- src/main/resources/static/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | MyApp</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <header>
+      <h1>Dashboard</h1>
+      <button onclick="logout()">Logout</button>
+    </header>
+    <main>
+      <p>Welcome to your dashboard, Admin!</p>
+      <!-- Add dashboard widgets or data here -->
+    </main>
+  </div>
+
+  <script>
+    function logout() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
