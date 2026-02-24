@@ -2,7 +2,7 @@ package com.example.demo;
 import org.springframework.web.bind.annotation.*;
 @RestController
 public class HelloController {
-    private String lastMessage = "Hello from Java backend!";
+    private String lastMessage = "Hi from Java backend!";
     @GetMapping("/hello")
     public String getMessage() {
         return lastMessage;
