@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Management</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px 5px 5px 0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+    button:hover{
+      background: #0056b3;
+    }
+    #result{
+      margin-top: 15px;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 6px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>Student Management</h2>
+  <input type="number" id="id" placeholder="ID">
+  <input type="text" id="name" placeholder="Name">
+  <input type="text" id="branch" placeholder="Branch">
+  <input type="number" id="year" placeholder="Year">
+  <div>
+    <button onclick="addStudent()">Add</button>
+    <button onclick="getStudents()">Get All</button>
+    <button onclick="getById()">Get By ID</button>
+    <button onclick="updateStudent()">Update</button>
+    <button onclick="deleteStudent()">Delete</button>
+    <button onclick="goBack()">Back</button>
+  </div>
+  <div id="result"></div>
+</div>
+<script>
+const baseUrl = "http://localhost:8080/students";
+function clearFields(){
+  document.getElementById("id").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("branch").value = "";
+  document.getElementById("year").value = "";
+}
+function addStudent(){
+  const student={
+    id: document.getElementById("id").value,
+    name: document.getElementById("name").value,
+    branch: document.getElementById("branch").value,
+    year: document.getElementById("year").value
+  };
+  fetch(baseUrl + "/add",{
+    method:"POST",
+    headers:{"Content-Type": "application/json" },
+    body: JSON.stringify(student)
+  })
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("result").innerText = data;
+    clearFields();
+  });
+}
+function getStudents(){
+  fetch(baseUrl)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+  });
+}
+function getById() {
+  const id = document.getElementById("id").value;
+
+  fetch(baseUrl + "/" + id)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    });
+}
+function updateStudent(){
+  const id = document.getElementById("id").value;
+  const student={
+    name: document.getElementById("name").value,
+    branch: document.getElementById("branch").value,
+    year: document.getElementById("year").value
+  };
+  fetch(baseUrl + "/update/" + id,{
+    method:"PUT",
+    headers:{"Content-Type": "application/json" },
+    body:JSON.stringify(student)
+  })
+  .then(res=>res.text())
+  .then(data=>{
+    document.getElementById("result").innerText = data;
+    clearFields();
+  });
+}
+function deleteStudent(){
+  const id = document.getElementById("id").value;
+
+  fetch(baseUrl + "/delete/" + id, {
+    method: "DELETE"
+  })
+  .then(res=> res.text())
+  .then(data=>{
+    document.getElementById("result").innerText = data;
+    clearFields();
+  });
+}
+function goBack(){
+  window.location.href = "dashboard.html";
+}
+</script>
+</body>
+</html>
