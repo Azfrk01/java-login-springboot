@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Student Management</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial;
@@ -47,101 +46,119 @@
       padding: 10px;
       border-radius: 6px;
       min-height: 40px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
 <div class="card">
   <h2>Student Management</h2>
-  <input type="number" id="id" placeholder="ID">
+
+  <input type="text" id="id" placeholder="ID">
   <input type="text" id="name" placeholder="Name">
   <input type="text" id="branch" placeholder="Branch">
   <input type="number" id="year" placeholder="Year">
+
   <div>
     <button onclick="addStudent()">Add</button>
     <button onclick="getStudents()">Get All</button>
     <button onclick="getById()">Get By ID</button>
-    <button onclick="updateStudent()">Update</button>
     <button onclick="deleteStudent()">Delete</button>
     <button onclick="goBack()">Back</button>
   </div>
+
   <div id="result"></div>
 </div>
+
 <script>
 const baseUrl = "http://localhost:8080/students";
+
 function clearFields(){
   document.getElementById("id").value = "";
   document.getElementById("name").value = "";
   document.getElementById("branch").value = "";
   document.getElementById("year").value = "";
 }
+
 function addStudent(){
-  const student={
+  const student = {
     id: document.getElementById("id").value,
     name: document.getElementById("name").value,
     branch: document.getElementById("branch").value,
     year: document.getElementById("year").value
   };
-  fetch(baseUrl + "/add",{
+
+  fetch(baseUrl, {
     method:"POST",
-    headers:{"Content-Type": "application/json" },
+    headers:{"Content-Type": "application/json"},
     body: JSON.stringify(student)
   })
-  .then(res => res.text())
+  .then(res => res.json())
   .then(data => {
-    document.getElementById("result").innerText = data;
+    document.getElementById("result").innerText =
+      "Student Added:\n" + JSON.stringify(data, null, 2);
     clearFields();
+  })
+  .catch(err => {
+    document.getElementById("result").innerText = "Error adding student";
   });
 }
+
 function getStudents(){
   fetch(baseUrl)
   .then(res => res.json())
   .then(data => {
-    document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    document.getElementById("result").innerText =
+      JSON.stringify(data, null, 2);
+  })
+  .catch(err => {
+    document.getElementById("result").innerText = "Error fetching students";
   });
 }
+
 function getById() {
   const id = document.getElementById("id").value;
 
   fetch(baseUrl + "/" + id)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    })
     .then(data => {
-      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+      document.getElementById("result").innerText =
+        JSON.stringify(data, null, 2);
+    })
+    .catch(() => {
+      document.getElementById("result").innerText = "Student not found";
     });
 }
-function updateStudent(){
-  const id = document.getElementById("id").value;
-  const student={
-    name: document.getElementById("name").value,
-    branch: document.getElementById("branch").value,
-    year: document.getElementById("year").value
-  };
-  fetch(baseUrl + "/update/" + id,{
-    method:"PUT",
-    headers:{"Content-Type": "application/json" },
-    body:JSON.stringify(student)
-  })
-  .then(res=>res.text())
-  .then(data=>{
-    document.getElementById("result").innerText = data;
-    clearFields();
-  });
-}
+
 function deleteStudent(){
   const id = document.getElementById("id").value;
 
-  fetch(baseUrl + "/delete/" + id, {
+  fetch(baseUrl + "/" + id, {
     method: "DELETE"
   })
-  .then(res=> res.text())
-  .then(data=>{
-    document.getElementById("result").innerText = data;
-    clearFields();
+  .then(res => {
+    if (res.status === 204) {
+      document.getElementById("result").innerText =
+        "Student Deleted Successfully";
+      clearFields();
+    } else {
+      document.getElementById("result").innerText =
+        "Student Not Found";
+    }
+  })
+  .catch(() => {
+    document.getElementById("result").innerText =
+      "Error deleting student";
   });
 }
+
 function goBack(){
   window.location.href = "dashboard.html";
 }
 </script>
+
 </body>
 </html>
