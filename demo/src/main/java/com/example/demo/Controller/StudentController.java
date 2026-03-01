@@ -3,15 +3,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.model.Student;
-import com.example.demo.Service.studentservice;
+import com.example.demo.service.StudentService;
 
 import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/students")
 public class StudentController{
-    private final studentservice service;
-    public StudentController(studentservice service){
+    private final StudentService service;
+    public StudentController(StudentService service){
         this.service = service;
     }
     @PostMapping

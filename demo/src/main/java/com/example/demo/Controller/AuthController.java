@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-import com.example.demo.Service.AuthService;
+import com.example.demo.service.AuthService;
 import com.example.demo.dto.AuthRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
