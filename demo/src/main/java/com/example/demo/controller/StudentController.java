@@ -22,7 +22,7 @@ public class StudentController{
     }
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudents(){
-        List<Student> students = service.getAllStudents();
+        List<Student> students=service.getAllStudents();
         return ResponseEntity.ok(students);
     }
     @GetMapping("/{id}")

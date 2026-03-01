@@ -11,8 +11,8 @@ public class AuthService{
     private final JwtUtil tokenUtil;
     private final BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
     public AuthService(UserRepository userRepo, JwtUtil tokenUtil){
-        this.userRepo = userRepo;
-        this.tokenUtil = tokenUtil;
+        this.userRepo=userRepo;
+        this.tokenUtil=tokenUtil;
     }
     public User registerUser(String userName, String rawPassword){
         if(userRepo.existsByUsername(userName)){
@@ -25,7 +25,7 @@ public class AuthService{
         return userRepo.save(newUser);
     }
     public String loginUser(String userName, String rawPassword){
-        User existingUser = userRepo.findByUsername(userName)
+        User existingUser=userRepo.findByUsername(userName)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         if(!passwordEncoder.matches(rawPassword, existingUser.getPassword())){
             throw new RuntimeException("Invalid password");
