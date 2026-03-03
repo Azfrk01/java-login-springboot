@@ -53,12 +53,10 @@
 <body>
 <div class="card">
   <h2>Student Management</h2>
-
   <input type="text" id="id" placeholder="ID">
   <input type="text" id="name" placeholder="Name">
   <input type="text" id="branch" placeholder="Branch">
   <input type="number" id="year" placeholder="Year">
-
   <div>
     <button onclick="addStudent()">Add</button>
     <button onclick="getStudents()">Get All</button>
@@ -66,99 +64,152 @@
     <button onclick="deleteStudent()">Delete</button>
     <button onclick="goBack()">Back</button>
   </div>
-
   <div id="result"></div>
 </div>
-
 <script>
 const baseUrl = "http://localhost:8080/students";
-
+function getToken(){
+  var token = localStorage.getItem("token");
+  if (token == null) {
+    return null;
+  }
+  return "Bearer " + token;
+}
 function clearFields(){
   document.getElementById("id").value = "";
   document.getElementById("name").value = "";
   document.getElementById("branch").value = "";
   document.getElementById("year").value = "";
 }
-
 function addStudent(){
-  const student = {
+  var token = getToken();
+  if (token == null) {
+    document.getElementById("result").innerText = "Please login first.";
+    return;
+  }
+  var student ={
     id: document.getElementById("id").value,
     name: document.getElementById("name").value,
     branch: document.getElementById("branch").value,
     year: document.getElementById("year").value
   };
-
-  fetch(baseUrl, {
-    method:"POST",
-    headers:{"Content-Type": "application/json"},
+  fetch(baseUrl,{
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token
+    },
     body: JSON.stringify(student)
   })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("result").innerText =
-      "Student Added:\n" + JSON.stringify(data, null, 2);
-    clearFields();
-  })
-  .catch(err => {
-    document.getElementById("result").innerText = "Error adding student";
-  });
-}
-
-function getStudents(){
-  fetch(baseUrl)
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("result").innerText =
-      JSON.stringify(data, null, 2);
-  })
-  .catch(err => {
-    document.getElementById("result").innerText = "Error fetching students";
-  });
-}
-
-function getById() {
-  const id = document.getElementById("id").value;
-
-  fetch(baseUrl + "/" + id)
-    .then(res => {
-      if (!res.ok) throw new Error();
-      return res.json();
-    })
-    .then(data => {
-      document.getElementById("result").innerText =
-        JSON.stringify(data, null, 2);
-    })
-    .catch(() => {
-      document.getElementById("result").innerText = "Student not found";
-    });
-}
-
-function deleteStudent(){
-  const id = document.getElementById("id").value;
-
-  fetch(baseUrl + "/" + id, {
-    method: "DELETE"
-  })
-  .then(res => {
-    if (res.status === 204) {
-      document.getElementById("result").innerText =
-        "Student Deleted Successfully";
-      clearFields();
+  .then(function(response) {
+    if (response.status == 200 || response.status == 201) {
+      return response.json();
     } else {
-      document.getElementById("result").innerText =
-        "Student Not Found";
+      throw "Error";
     }
   })
-  .catch(() => {
-    document.getElementById("result").innerText =
-      "Error deleting student";
+  .then(function(data) {
+    document.getElementById("result").innerText ="Student added successfully:\n" +
+      JSON.stringify(data, null, 2);
+    clearFields();
+  })
+  .catch(function() {
+    document.getElementById("result").innerText ="Something went wrong while adding student.";
   });
 }
-
+function getStudents(){
+  var token = getToken();
+  if (token == null) {
+    document.getElementById("result").innerText = "Please login first.";
+    return;
+  }
+  fetch(baseUrl,{
+    method: "GET",
+    headers: {
+      "Authorization": token
+    }
+  })
+  .then(function(response){
+    if (response.status == 200){
+      return response.json();
+    } else {
+      throw "Error";
+    }
+  })
+  .then(function(data){
+    document.getElementById("result").innerText =JSON.stringify(data, null, 2);
+  })
+  .catch(function(){
+    document.getElementById("result").innerText ="Unable to fetch students.";
+  });
+}
+function getById(){
+  var id = document.getElementById("id").value;
+  var token = getToken();
+  if(id==""){
+    document.getElementById("result").innerText = "Enter ID first.";
+    return;
+  }
+  if (token==null){
+    document.getElementById("result").innerText = "Please login first.";
+    return;
+  }
+  fetch(baseUrl + "/" + id,{
+    method: "GET",
+    headers: {
+      "Authorization": token
+    }
+  })
+  .then(function(response){
+    if (response.status == 200){
+      return response.json();
+    }else{
+      throw "Not Found";
+    }
+  })
+  .then(function(data){
+    document.getElementById("result").innerText =JSON.stringify(data, null, 2);
+  })
+  .catch(function(){
+    document.getElementById("result").innerText ="Student not found or unauthorized.";
+  });
+}
+function deleteStudent(){
+  var id = document.getElementById("id").value;
+  var token = getToken();
+  if(id==""){
+    document.getElementById("result").innerText = "Enter ID to delete.";
+    return;
+  }
+  if(token==null){
+    document.getElementById("result").innerText = "Please login first.";
+    return;
+  }
+  fetch(baseUrl+"/"+id,{
+    method: "DELETE",
+    headers: {
+      "Authorization": token
+    }
+  })
+  .then(function(response){
+    if (response.status == 204){
+      document.getElementById("result").innerText ="Student deleted successfully.";
+      clearFields();
+    }
+    else if (response.status == 401 || response.status == 403){
+      document.getElementById("result").innerText ="Unauthorized. Login again.";
+    }
+    else{
+      document.getElementById("result").innerText ="Student not found.";
+    }
+  })
+  .catch(function(){
+    document.getElementById("result").innerText ="Error while deleting student.";
+  });
+}
 function goBack(){
   window.location.href = "dashboard.html";
 }
 </script>
-
 </body>
 </html>
