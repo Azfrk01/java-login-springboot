@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register | MyApp</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="login-container">
-    <form class="login-box" onsubmit="return registerUser(event)">
+    <form class="login-box" onsubmit="return register(event)">
       <h2>Create Account</h2>
       <input type="text" id="username" placeholder="Username" required />
       <input type="password" id="password" placeholder="Password" required />
@@ -19,7 +19,7 @@
     </form>
   </div>
   <script>
-    async function registerUser(e){
+    async function register(e){
       e.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
@@ -32,18 +32,20 @@
           body: JSON.stringify({ username, password })
         });
         if(response.ok){
-          alert("Registration successful!");
-        }else{
-          document.getElementById("error-msg").innerText="Registration failed. Try again.";
+        alert("Registration successful!");
+        } else {
+          document.getElementById("error-msg").innerText ="Registration failed. Try again.";
         }
-      }catch(err){
-        document.getElementById("error-msg").innerText="Something went wrong. Try again.";
+      } catch (err) {
+        console.error(err);
+        document.getElementById("error-msg").innerText ="Something went wrong. Try again.";
       }
     }
   </script>
+
   <script>
-  function goToLogin(){
-    window.location.href = "index.html";
+    function goToLogin(){
+      window.location.href = "index.html";
     }
   </script>
 </body>
