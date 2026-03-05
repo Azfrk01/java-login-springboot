@@ -53,10 +53,10 @@
 <body>
 <div class="card">
   <h2>Student Management</h2>
-  <input type="text" id="id" placeholder="ID">
-  <input type="text" id="name" placeholder="Name">
-  <input type="text" id="branch" placeholder="Branch">
-  <input type="number" id="year" placeholder="Year">
+  <input type="text" id="id" placeholder="ID" required>
+  <input type="text" id="name" placeholder="Name" required>
+  <input type="text" id="branch" placeholder="Branch" required>
+  <input type="number" id="year" min="1" max="4" placeholder="Year" required>
   <div>
     <button onclick="addStudent()">Add</button>
     <button onclick="getStudents()">Get All</button>

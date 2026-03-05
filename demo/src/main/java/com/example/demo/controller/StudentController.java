@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
@@ -16,7 +18,7 @@ public class StudentController{
         this.service = service;
     }
     @PostMapping
-    public ResponseEntity<Student> addStudent(@RequestBody Student student){
+    public ResponseEntity<Student> addStudent(@Valid @RequestBody Student student){
         Student savedStudent = service.saveStudent(student);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
@@ -37,5 +39,15 @@ public class StudentController{
     public ResponseEntity<Void> deleteStudent(@PathVariable String id){
         service.deleteStudent(id);
         return ResponseEntity.noContent().build();
+    }
+        @PutMapping("/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable String id,@Valid @RequestBody Student student){
+        Student updated=service.updateStudent(id,student);
+        return ResponseEntity.ok(updated);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<Student>> searchStudents(@RequestParam String name){
+        List<Student> students=service.searchByName(name);
+        return ResponseEntity.ok(students);
     }
 }
