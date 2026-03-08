@@ -3,17 +3,18 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Document(collection = "students")
 public class Student {
     @Id
-    @NotBlank
+    @NotNull
     private String id;
     @NotBlank
     private String name;
     @NotBlank
     private String branch;
-    @NotBlank
+    @NotNull
     private int year;
     public Student(){
     }
