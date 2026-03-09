@@ -2,7 +2,8 @@ package com.example.demo.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 
@@ -23,8 +24,8 @@ public class StudentController{
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents(){
-        List<Student> students=service.getAllStudents();
+    public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable){
+        Page<Student> students = service.getAllStudents(pageable);
         return ResponseEntity.ok(students);
     }
     @GetMapping("/{id}")
@@ -49,5 +50,9 @@ public class StudentController{
     public ResponseEntity<List<Student>> searchStudents(@RequestParam String name){
         List<Student> students=service.searchByName(name);
         return ResponseEntity.ok(students);
+    }
+    @GetMapping("/stats")
+    public ResponseEntity<?> getStats(){
+        return ResponseEntity.ok(service.getStats());
     }
 }

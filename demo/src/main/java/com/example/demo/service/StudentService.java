@@ -3,6 +3,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.demo.model.Student;
 import com.example.demo.repositries.StudentRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.util.Map;
+import java.util.stream.Collectors;
+import com.example.demo.dto.StatsResponse;
 
 @Service
 public class StudentService{
@@ -13,8 +18,8 @@ public class StudentService{
     public Student saveStudent(Student student){
         return repository.save(student);
     }
-    public List<Student> getAllStudents(){
-        return repository.findAll();
+    public Page<Student> getAllStudents(Pageable pageable){
+   return repository.findAll(pageable); 
     }
     public void deleteStudent(String id){
         repository.deleteById(id);
@@ -31,5 +36,16 @@ public class StudentService{
     }
     public List<Student> searchByName(String name){
         return repository.findByNameContainingIgnoreCase(name);
+    }
+    public StatsResponse getStats(){
+        List<Student> students = repository.findAll();
+        long total = students.size();
+        Map<String, Long> branchCounts =students.stream().collect(Collectors.groupingBy(Student::getBranch,Collectors.counting()));
+        Map<Integer, Long> yearCounts =students.stream().collect(Collectors.groupingBy(Student::getYear,Collectors.counting()));
+        StatsResponse stats = new StatsResponse();
+        stats.setTotalStudents(total);
+        stats.setBranchCounts(branchCounts);
+        stats.setYearCounts(yearCounts);
+        return stats;
     }
 }
