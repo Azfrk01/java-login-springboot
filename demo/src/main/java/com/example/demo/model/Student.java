@@ -2,20 +2,29 @@ package com.example.demo.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Document(collection = "students")
 public class Student {
     @Id
-    @NotNull
     private String id;
     @NotBlank
     private String name;
     @NotBlank
     private String branch;
-    @NotNull
-    private int year;
+    @Min(1)
+    @Max(4)
+    private Integer year;
+    @DecimalMin("0.0")
+    @DecimalMax("10.0")
+    private Double cgpa;
+    private String email;
+    private String phone;
     public Student(){
     }
     public Student(String id, String name, String branch, int year) {
@@ -23,6 +32,9 @@ public class Student {
         this.name = name;
         this.branch = branch;
         this.year = year;
+        this.cgpa = 0.0;
+        this.email = "";
+        this.phone = "";
     }
     public String getId(){
         return id;
@@ -32,6 +44,24 @@ public class Student {
     }
     public String getName(){
         return name;
+    }
+    public Double getCgpa() {
+        return cgpa;
+    }
+    public void setCgpa(Double cgpa){
+        this.cgpa = cgpa;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
     public void setName(String name) {
         this.name = name;

@@ -5,11 +5,18 @@ public class StatsResponse{
     private long totalStudents;
     private Map<String, Long> branchCounts;
     private Map<Integer, Long> yearCounts;
+    private double averageCgpa;
     public long getTotalStudents(){
         return totalStudents;
     }
     public void setTotalStudents(long totalStudents){
         this.totalStudents = totalStudents;
+    }
+    public double getAverageCgpa() {
+        return averageCgpa;
+    }
+    public void setAverageCgpa(double averageCgpa){
+        this.averageCgpa = averageCgpa;     
     }
     public Map<String, Long> getBranchCounts(){
         return branchCounts;

@@ -25,7 +25,7 @@ public class StudentController{
     }
     @GetMapping
     public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable){
-        Page<Student> students = service.getAllStudents(pageable);
+        Page<Student>students=service.getAllStudents(pageable);
         return ResponseEntity.ok(students);
     }
     @GetMapping("/{id}")

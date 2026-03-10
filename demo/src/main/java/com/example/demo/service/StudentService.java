@@ -2,7 +2,7 @@ package com.example.demo.service;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import com.example.demo.model.Student;
-import com.example.demo.repositries.StudentRepo;
+import com.example.demo.repositories.StudentRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Map;
@@ -32,6 +32,7 @@ public class StudentService{
         student.setName(studentDetails.getName());
         student.setBranch(studentDetails.getBranch());
         student.setYear(studentDetails.getYear());
+        student.setCgpa(studentDetails.getCgpa());
         return repository.save(student);
     }
     public List<Student> searchByName(String name){
@@ -40,10 +41,12 @@ public class StudentService{
     public StatsResponse getStats(){
         List<Student> students = repository.findAll();
         long total = students.size();
+        double avgCgpa = students.stream().mapToDouble(Student::getCgpa).average().orElse(0);
         Map<String, Long> branchCounts =students.stream().collect(Collectors.groupingBy(Student::getBranch,Collectors.counting()));
         Map<Integer, Long> yearCounts =students.stream().collect(Collectors.groupingBy(Student::getYear,Collectors.counting()));
         StatsResponse stats = new StatsResponse();
         stats.setTotalStudents(total);
+        stats.setAverageCgpa(avgCgpa);
         stats.setBranchCounts(branchCounts);
         stats.setYearCounts(yearCounts);
         return stats;

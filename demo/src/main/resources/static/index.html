@@ -95,6 +95,7 @@ margin-top:4px;
 
 <div>
 <label class="block text-stone-300 text-xs font-semibold uppercase tracking-widest mb-2">Username</label>
+<form id="loginForm">
 
 <input
 id="username"
@@ -103,10 +104,6 @@ placeholder="Enter your username"
 required
 class="input-field w-full bg-stone-800 border border-stone-700 rounded-xl px-4 py-3 text-white placeholder-stone-500 text-sm"
 />
-</div>
-
-<div>
-<label class="block text-stone-300 text-xs font-semibold uppercase tracking-widest mb-2">Password</label>
 
 <input
 id="password"
@@ -118,15 +115,12 @@ class="input-field w-full bg-stone-800 border border-stone-700 rounded-xl px-4 p
 
 <p id="error-msg" class="error"></p>
 
-</div>
-
-<button
-type="submit"
-class="btn-login btn-label w-full bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl py-3 text-sm tracking-wide mt-2"
->
+<button type="submit"
+class="btn-login btn-label w-full bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl py-3 text-sm tracking-wide mt-2">
 Login
 </button>
 
+</form>
 <div class="flex items-center gap-3 my-1">
 <div class="flex-1 h-px bg-stone-800"></div>
 <span class="text-stone-600 text-xs">or</span>
@@ -149,50 +143,54 @@ Create Account
 
 async function login(e){
 
-e.preventDefault();
+    e.preventDefault();
 
-const username=document.getElementById('username').value;
-const password=document.getElementById('password').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-try{
+    try{
 
-const response=await fetch('/api/auth/login',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({username,password})
-});
+        const response = await fetch('/api/auth/login',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({username,password})
+        });
 
-if(response.ok){
+        if(response.ok){
 
-const result=await response.json();
+            const result = await response.json();
 
-localStorage.setItem("token",result.token);
+            // store token
+            localStorage.setItem("token", result.token);
 
-window.location.href="dashboard.html";
+            // store username
+            localStorage.setItem("username", username);
 
-}else{
+            // redirect
+            window.location.href = "dashboard.html";
 
-document.getElementById("error-msg").innerText="Invalid username or password!";
+        }else{
 
-}
+            document.getElementById("error-msg").innerText =
+            "Invalid username or password!";
 
-}catch(err){
+        }
 
-console.error(err);
+    }catch(err){
 
-document.getElementById("error-msg").innerText="Something went wrong. Try again.";
+        console.error(err);
 
-}
+        document.getElementById("error-msg").innerText =
+        "Something went wrong. Try again.";
+
+    }
 
 }
 
 function goToRegister(){
-
-window.location.href="register.html";
-
+    window.location.href="register.html";
 }
 
 </script>
-
 </body>
 </html>

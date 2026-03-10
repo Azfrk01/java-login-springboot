@@ -1,6 +1,6 @@
 package com.example.demo.service;
 import com.example.demo.model.User;
-import com.example.demo.repositries.UserRepository;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.util.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
