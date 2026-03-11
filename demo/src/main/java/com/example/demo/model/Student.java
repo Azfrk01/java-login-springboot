@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +24,7 @@ public class Student {
     @DecimalMin("0.0")
     @DecimalMax("10.0")
     private Double cgpa;
+    @Email
     private String email;
     private String phone;
     public Student(){

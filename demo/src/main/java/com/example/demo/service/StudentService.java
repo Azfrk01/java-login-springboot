@@ -33,6 +33,8 @@ public class StudentService{
         student.setBranch(studentDetails.getBranch());
         student.setYear(studentDetails.getYear());
         student.setCgpa(studentDetails.getCgpa());
+        student.setEmail(studentDetails.getEmail());
+        student.setPhone(studentDetails.getPhone());
         return repository.save(student);
     }
     public List<Student> searchByName(String name){
