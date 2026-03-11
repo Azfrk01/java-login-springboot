@@ -153,7 +153,11 @@ async function login(e){
             localStorage.setItem("token", result.token);
             localStorage.setItem("role", result.role);
             localStorage.setItem("username", username);
-            window.location.href = "dashboard.html";
+            if(result.role === "ADMIN"){
+                 window.location.href = "admin-dashboard.html";
+            }else{
+                window.location.href = "student-dashboard.html";
+            }
         }else{
             document.getElementById("error-msg").innerText ="Invalid username or password!";
         }

@@ -326,51 +326,39 @@
       d.classList.remove('open');
     }
   });
-
-  function openProfileModal() {
+  function openProfileModal(){
     document.getElementById('profileDropdown').classList.remove('open');
     document.getElementById('profileModal').classList.add('open');
   }
-
-  function confirmLogout() {
+  function confirmLogout(){
     document.getElementById('profileDropdown').classList.remove('open');
     document.getElementById('logoutModal').classList.add('open');
   }
-
-  function closeModal(id) {
+  function closeModal(id){
     document.getElementById(id).classList.remove('open');
   }
-
-  // Close modals on backdrop click
   ['studentsModal','profileModal','logoutModal'].forEach(id => {
     document.getElementById(id).addEventListener('click', function(e) {
       if (e.target === this) closeModal(id);
     });
   });
   document.addEventListener("DOMContentLoaded", function () {
-
   const username = localStorage.getItem("username");
-
-  if (!username) {
+  if (!username){
     window.location.href = "index.html";
     return;
   }
-
   const nav = document.getElementById("navUsername");
   const dropdown = document.getElementById("dropdownUsername");
   const welcome = document.getElementById("welcomeUsername");
   const profile = document.getElementById("profileUsername");
   const avatar = document.getElementById("avatarLetter");
-
   if(nav) nav.textContent = username;
   if(dropdown) dropdown.textContent = username;
   if(welcome) welcome.textContent = username;
   if(profile) profile.textContent = username;
-
   if(avatar) avatar.textContent = username.charAt(0).toUpperCase();
-
 });
 </script>
-
 </body>
 </html>

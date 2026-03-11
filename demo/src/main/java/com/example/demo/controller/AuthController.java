@@ -18,7 +18,7 @@ public class AuthController{
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody AuthRequest req){
         try{
-            service.registerUser(req.getUsername(), req.getPassword());
+            service.registerUser(req.getUsername(),req.getPassword(),req.getRole());
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("User registered");
         }catch(RuntimeException ex){

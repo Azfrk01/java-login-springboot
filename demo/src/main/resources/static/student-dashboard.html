@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-950 text-white min-h-screen">
+
+<div class="max-w-5xl mx-auto py-12 px-6">
+
+<h1 class="text-3xl font-bold mb-4">Student Dashboard</h1>
+
+<p class="text-stone-400 mb-10">
+Welcome <span id="username"></span>
+</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<div class="bg-stone-900 p-6 rounded-xl border border-stone-800">
+<h2 class="text-lg font-semibold mb-2">Student Directory</h2>
+<p class="text-stone-400 text-sm">
+View all students in the directory.
+</p>
+<a href="student.html"
+class="inline-block mt-4 bg-orange-500 px-4 py-2 rounded-lg text-sm">
+Open Directory
+</a>
+</div>
+
+<div class="bg-stone-900 p-6 rounded-xl border border-stone-800">
+<h2 class="text-lg font-semibold mb-2">Profile</h2>
+<p class="text-stone-400 text-sm">
+View your account details.
+</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+document.getElementById("username").innerText =
+localStorage.getItem("username");
+</script>
+
+</body>
+</html>

@@ -16,14 +16,17 @@ public class AuthService{
         this.userRepo=userRepo;
         this.tokenUtil=tokenUtil;
     }
-    public User registerUser(String userName, String rawPassword){
+    public User registerUser(String userName, String rawPassword, String role){
         if(userRepo.existsByUsername(userName)){
             throw new RuntimeException("Username already exists");
         }
         User newUser = new User();
         newUser.setUsername(userName);
         newUser.setPassword(passwordEncoder.encode(rawPassword));
-        newUser.setRole("STUDENT");
+        if(role == null || role.isEmpty()){
+            role = "STUDENT";
+        }
+        newUser.setRole(role);
         newUser.setCreatedAt(new Date());
         return userRepo.save(newUser);
 
