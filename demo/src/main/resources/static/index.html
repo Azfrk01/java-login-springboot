@@ -136,61 +136,35 @@ Create Account
 </button>
 
 </form>
-
 </div>
-
 <script>
-
 async function login(e){
-
     e.preventDefault();
-
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-
     try{
-
         const response = await fetch('/api/auth/login',{
             method:'POST',
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify({username,password})
         });
-
         if(response.ok){
-
             const result = await response.json();
-
-            // store token
             localStorage.setItem("token", result.token);
-
-            // store username
+            localStorage.setItem("role", result.role);
             localStorage.setItem("username", username);
-
-            // redirect
             window.location.href = "dashboard.html";
-
         }else{
-
-            document.getElementById("error-msg").innerText =
-            "Invalid username or password!";
-
+            document.getElementById("error-msg").innerText ="Invalid username or password!";
         }
-
     }catch(err){
-
         console.error(err);
-
-        document.getElementById("error-msg").innerText =
-        "Something went wrong. Try again.";
-
+        document.getElementById("error-msg").innerText ="Something went wrong. Try again.";
     }
-
 }
-
 function goToRegister(){
     window.location.href="register.html";
 }
-
 </script>
 </body>
 </html>

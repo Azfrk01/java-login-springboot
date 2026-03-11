@@ -2,8 +2,10 @@ package com.example.demo.service;
 import com.example.demo.model.User;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.util.JwtUtil;
+import java.util.Date;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.demo.dto.LoginResponse;
 
 @Service
 public class AuthService{
@@ -22,14 +24,17 @@ public class AuthService{
         newUser.setUsername(userName);
         newUser.setPassword(passwordEncoder.encode(rawPassword));
         newUser.setRole("STUDENT");
+        newUser.setCreatedAt(new Date());
         return userRepo.save(newUser);
+
     }
-    public String loginUser(String userName, String rawPassword){
+    public LoginResponse loginUser(String userName, String rawPassword){
         User existingUser=userRepo.findByUsername(userName)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         if(!passwordEncoder.matches(rawPassword, existingUser.getPassword())){
             throw new RuntimeException("Invalid password");
         }
-        return tokenUtil.createToken(userName);
+        String token = tokenUtil.createToken(userName);
+        return new LoginResponse(token, existingUser.getRole());
     }
 }

@@ -1,4 +1,6 @@
 package com.example.demo.model;
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,6 +11,7 @@ public class User{
     private String username;
     private String password;
     private String role;
+    private Date createdAt;
     public User(){
     }
     public User(String id, String username, String password, String role){
@@ -40,5 +43,11 @@ public class User{
     }
     public void setRole(String role){
         this.role = role;
+    }
+    public Date getCreatedAt() {
+    return createdAt;
+    }
+    public void setCreatedAt(Date createdAt){
+        this.createdAt = createdAt;
     }
 }

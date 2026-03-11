@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.LoginResponse;
 import com.example.demo.service.AuthService;
 
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,12 @@ public class AuthController{
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody AuthRequest req){
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody AuthRequest req){
         try{
-            String jwt = service.loginUser(req.getUsername(), req.getPassword());
-            return ResponseEntity.ok(Map.of("token", jwt));
+            LoginResponse response = service.loginUser(req.getUsername(), req.getPassword());
+            return ResponseEntity.ok(response);
         }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }
