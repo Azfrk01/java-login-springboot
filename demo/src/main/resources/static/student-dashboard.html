@@ -5,35 +5,66 @@
 <title>Student Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="flex bg-slate-100">
 
-<body class="bg-stone-950 text-white min-h-screen">
+<script src="https://cdn.tailwindcss.com"></script>
 
-<div class="max-w-5xl mx-auto py-12 px-6">
+<!-- Sidebar -->
+<aside class="w-60 bg-slate-800 text-white min-h-screen p-4 flex flex-col">
 
-<h1 class="text-3xl font-bold mb-4">Student Dashboard</h1>
+<h2 class="text-xl font-bold mb-6">Student Panel</h2>
 
-<p class="text-stone-400 mb-10">
-Welcome <span id="username"></span>
-</p>
+<nav class="flex flex-col gap-2 flex-1">
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-<div class="bg-stone-900 p-6 rounded-xl border border-stone-800">
-<h2 class="text-lg font-semibold mb-2">Student Directory</h2>
-<p class="text-stone-400 text-sm">
-View all students in the directory.
-</p>
-<a href="student.html"
-class="inline-block mt-4 bg-orange-500 px-4 py-2 rounded-lg text-sm">
-Open Directory
+<a href="student-dashboard.html" class="bg-slate-700 p-2 rounded">
+Dashboard
 </a>
+
+<a href="student.html" class="p-2 hover:bg-slate-700 rounded">
+Students
+</a>
+
+<a href="#" class="p-2 hover:bg-slate-700 rounded">
+Profile
+</a>
+
+</nav>
+
+<button onclick="logout()" class="bg-red-600 p-2 rounded mt-4">
+Logout
+</button>
+
+</aside>
+
+<!-- Main -->
+<div class="flex-1">
+
+<!-- Navbar -->
+<header class="bg-white shadow p-4 flex justify-between">
+
+<h2 class="text-lg font-semibold">
+Student Dashboard
+</h2>
+
+<div>
+
+<span id="username"></span>
+
 </div>
 
-<div class="bg-stone-900 p-6 rounded-xl border border-stone-800">
-<h2 class="text-lg font-semibold mb-2">Profile</h2>
-<p class="text-stone-400 text-sm">
-View your account details.
-</p>
+</header>
+
+<!-- Content -->
+<div class="p-6">
+
+<h1 class="text-2xl font-bold mb-4">
+Welcome <span id="welcomeUsername"></span>
+</h1>
+
+<div class="bg-white p-6 rounded shadow">
+
+Dashboard content here
+
 </div>
 
 </div>
@@ -41,9 +72,22 @@ View your account details.
 </div>
 
 <script>
+
+if (!localStorage.getItem("token")) {
+  window.location.href = "index.html";
+}
+
 document.getElementById("username").innerText =
-localStorage.getItem("username");
+  localStorage.getItem("username");
+
+document.getElementById("welcomeUsername").innerText =
+  localStorage.getItem("username");
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
 </script>
 
-</body>
-</html>
+</body></html>

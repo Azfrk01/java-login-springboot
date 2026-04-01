@@ -103,8 +103,32 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-stone-950 flex items-start justify-center px-4 py-12 relative overflow-x-hidden">
+<body class="flex bg-slate-100 min-h-screen">
+  <aside class="w-60 bg-slate-800 text-white min-h-screen p-4 flex flex-col">
 
+<h2 class="text-xl font-bold mb-6">Student Panel</h2>
+
+<nav class="flex flex-col gap-2 flex-1">
+
+<a href="student-dashboard.html" class="p-2 hover:bg-slate-700 rounded">
+Dashboard
+</a>
+
+<a href="student.html" class="bg-slate-700 p-2 rounded">
+Students
+</a>
+
+<a href="#" class="p-2 hover:bg-slate-700 rounded">
+Profile
+</a>
+
+</nav>
+
+<button onclick="logout()" class="bg-red-600 p-2 rounded mt-4">
+Logout
+</button>
+
+</aside>
   <div class="grain"></div>
 
   <!-- Background glow -->
@@ -190,14 +214,17 @@
   </div>
 
 <script>
-const baseUrl = "/students";
-function getToken(){
-  var token = localStorage.getItem("token");
-  if (token == null) {
-    return null;
+  if (!localStorage.getItem("token")) {
+  window.location.href = "index.html";
   }
-  return "Bearer " + token;
-}
+  const baseUrl = "/students";
+  function getToken(){
+    var token = localStorage.getItem("token");
+    if (token == null) {
+      return null;
+    }
+    return "Bearer " + token;
+  }
 function clearFields(){
   document.getElementById("id").value = "";
   document.getElementById("name").value = "";
@@ -271,6 +298,10 @@ function getStudents(){
     document.getElementById("result").innerText ="Unable to fetch students.";
   });
 }
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
 function getById(){
   var id = document.getElementById("id").value;
   var token = getToken();
@@ -336,7 +367,7 @@ function deleteStudent(){
   });
 }
 function goBack(){
-  window.location.href = "dashboard.html";
+  window.location.href = "student-dashboard.html";
 }
 </script>
 </body>
