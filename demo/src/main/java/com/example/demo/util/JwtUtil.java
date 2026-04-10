@@ -8,13 +8,14 @@ import java.util.Date;
 @Component
 public class JwtUtil{
     private final String secretKeyValue ="this-is-my-secret-key-make-it-at-least-32-chars!!";
-    private final long tokenValidity =24 * 60 * 60 * 1000;
+    private final long tokenValidity=24 * 60 * 60 * 1000;
     private SecretKey getSigningKey(){
         return Keys.hmacShaKeyFor(secretKeyValue.getBytes());
     }
-    public String createToken(String userName){
+    public String createToken(String userName, String role){
         return Jwts.builder()
                 .subject(userName)
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + tokenValidity))
                 .signWith(getSigningKey())
@@ -28,11 +29,19 @@ public class JwtUtil{
                 .getPayload()
                 .getSubject();
     }
+    public String getRoleFromToken(String jwtToken){
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload()
+                .get("role", String.class);
+    }
     public boolean validateToken(String jwtToken){
         try{
             getUserNameFromToken(jwtToken);
             return true;
-        }catch (Exception ex){
+        }catch(Exception ex){
             return false;
         }
     }

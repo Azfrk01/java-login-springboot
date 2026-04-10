@@ -256,7 +256,48 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
+      
       <div class="p-6">
+        <!-- Stats Cards -->
+          <div class="grid grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-white p-4 rounded shadow">
+      <p class="text-gray-500">Total Students</p>
+      <h2 id="totalStudents" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <p class="text-gray-500">Average CGPA</p>
+      <h2 id="avgCgpa" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <p class="text-gray-500">Total Users</p>
+      <h2 id="totalUsers" class="text-3xl font-bold">0</h2>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+       <p class="text-gray-500">Pending Approvals</p>
+       <h2 id="pendingApprovals" class="text-3xl font-bold">0</h2>
+    </div>
+    <!-- Branch Breakdown -->
+    <div class="bg-white p-6 rounded shadow mb-6">
+      <h3 class="text-lg font-semibold mb-4">
+       Branch Breakdown
+      </h3>
+    <div id="branchBreakdown" class="space-y-3">
+    </div>
+    </div>
+    <!-- Recent Activity -->
+<div class="bg-white p-6 rounded shadow">
+
+  <h3 class="text-lg font-semibold mb-4">
+    Recent Students
+  </h3>
+
+  <div id="recentStudents" class="space-y-3">
+
+  </div>
+
+</div>
+    </div>
         <div class="flex flex-col items-center mb-6">
           <div class="w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center text-white text-2xl font-bold syne mb-3" style="box-shadow:0 0 0 3px #f97316,0 0 0 6px #292524">J</div>
           <p id="profileUsername" class="syne text-white font-bold text-lg"></p>
@@ -338,23 +379,114 @@
       });
     });
     document.addEventListener("DOMContentLoaded", function () {
+
     const username = localStorage.getItem("username");
+
     if (!localStorage.getItem("token")) {
-      window.location.href = "index.html";
-      return;
+        window.location.href = "index.html";
+        return;
     }
     const nav = document.getElementById("navUsername");
     const dropdown = document.getElementById("dropdownUsername");
     const welcome = document.getElementById("welcomeUsername");
     const profile = document.getElementById("profileUsername");
     const avatar = document.getElementById("avatarLetter");
-
     if(nav) nav.textContent = username;
     if(dropdown) dropdown.textContent = username;
     if(welcome) welcome.textContent = username;
     if(profile) profile.textContent = username;
     if(avatar) avatar.textContent = username.charAt(0).toUpperCase();
+    loadStats();
+    loadRecentStudents();
+
+});
+  function loadStats(){
+
+  fetch("/students/stats", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    document.getElementById("totalStudents").innerText = data.totalStudents;
+    document.getElementById("avgCgpa").innerText = data.averageCgpa;
+    document.getElementById("totalUsers").innerText = data.totalUsers;
+    document.getElementById("pendingApprovals").innerText = data.pendingApprovals;
+
+    loadBranchBreakdown(data.branchStats);
+
   });
+
+}
+function loadBranchBreakdown(branchStats){
+
+  const container = document.getElementById("branchBreakdown");
+  container.innerHTML = "";
+
+  const total = Object.values(branchStats)
+                      .reduce((a,b) => a+b, 0);
+
+  for (let branch in branchStats){
+
+    let count = branchStats[branch];
+    let percent = (count / total) * 100;
+
+    container.innerHTML += `
+      <div>
+
+        <div class="flex justify-between text-sm mb-1">
+          <span>${branch}</span>
+          <span>${count}</span>
+        </div>
+
+        <div class="w-full bg-gray-200 h-3 rounded">
+          <div class="bg-blue-500 h-3 rounded"
+               style="width:${percent}%">
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+}
+function loadRecentStudents(){
+
+  fetch("/students?page=0&size=5&sort=id,desc", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    const container = document.getElementById("recentStudents");
+    container.innerHTML = "";
+
+    data.content.forEach(student => {
+
+      container.innerHTML += `
+        <div class="flex justify-between border-b pb-2">
+
+          <div>
+            <p class="font-semibold">${student.name}</p>
+            <p class="text-gray-500 text-sm">
+              ${student.branch}
+            </p>
+          </div>
+
+          <div class="text-gray-400 text-sm">
+            ID: ${student.id}
+          </div>
+
+        </div>
+      `;
+    });
+
+  });
+
+}
   </script>
   </body>
   </html>

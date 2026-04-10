@@ -21,13 +21,12 @@ public class SecurityConfig{
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/students/**").permitAll()
-                .requestMatchers("/*.html", "/*.css", "/*.js").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/students/**").hasAnyRole("ADMIN","STUDENT")
+                .requestMatchers("/*.html","/*.css","/*.js").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtFilter,
-                UsernamePasswordAuthenticationFilter.class
-            );
+            .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
