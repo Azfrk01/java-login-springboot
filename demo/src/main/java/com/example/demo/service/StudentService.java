@@ -1,34 +1,38 @@
 package com.example.demo.service;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import com.example.demo.model.Student;
-import com.example.demo.repositories.StudentRepo;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.example.demo.model.Student;
+import com.example.demo.repositories.StudentRepo;
 import com.example.demo.dto.StatsResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class StudentService{
     private final StudentRepo repository;
     public StudentService(StudentRepo repository){
-        this.repository=repository;
+        this.repository = repository;
     }
     public Student saveStudent(Student student){
         return repository.save(student);
     }
     public Page<Student> getAllStudents(Pageable pageable){
-   return repository.findAll(pageable); 
-    }
-    public void deleteStudent(String id){
-        repository.deleteById(id);
+        return repository.findAll(pageable);
     }
     public Student getStudentById(String id){
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
     }
-    public Student updateStudent(String id,Student studentDetails){
-        Student student=repository.findById(id).orElseThrow(()->new RuntimeException("Student not found"));
+    public void deleteStudent(String id){
+        if (!repository.existsById(id)) {
+            throw new RuntimeException("Student not found");
+        }
+        repository.deleteById(id);
+    }
+    public Student updateStudent(String id, Student studentDetails){
+        Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         student.setName(studentDetails.getName());
         student.setBranch(studentDetails.getBranch());
         student.setYear(studentDetails.getYear());
@@ -44,8 +48,8 @@ public class StudentService{
         List<Student> students = repository.findAll();
         long total = students.size();
         double avgCgpa = students.stream().mapToDouble(Student::getCgpa).average().orElse(0);
-        Map<String, Long> branchCounts =students.stream().collect(Collectors.groupingBy(Student::getBranch,Collectors.counting()));
-        Map<Integer, Long> yearCounts =students.stream().collect(Collectors.groupingBy(Student::getYear,Collectors.counting()));
+        Map<String, Long> branchCounts = students.stream().collect(Collectors.groupingBy(Student::getBranch, Collectors.counting()));
+        Map<Integer, Long> yearCounts = students.stream().collect(Collectors.groupingBy(Student::getYear, Collectors.counting()));
         StatsResponse stats = new StatsResponse();
         stats.setTotalStudents(total);
         stats.setAverageCgpa(avgCgpa);
