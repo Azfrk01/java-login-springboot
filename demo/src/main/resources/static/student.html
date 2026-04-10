@@ -1,373 +1,267 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Student Management</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management | Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    body { font-family: 'DM Sans', sans-serif; margin: 0; }
-    .syne { font-family: 'Syne', sans-serif; }
-
-    .grain {
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      opacity: 0.5;
-    }
-
-    .card {
-      animation: slideUp 0.55s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    @keyframes slideUp {
-      from { opacity:0; transform:translateY(24px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    .input-field {
-      width: 100%;
-      background: #1c1917;
-      border: 1px solid #292524;
-      border-radius: 12px;
-      padding: 11px 14px;
-      color: #e7e5e4;
-      font-size: 0.875rem;
-      font-family: 'DM Sans', sans-serif;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .input-field::placeholder { color: #57534e; }
-    .input-field:focus {
-      border-color: #f97316;
-      box-shadow: 0 0 0 3px rgba(249,115,22,0.15);
-    }
-
-    /* hide number input arrows */
-    .input-field[type=number]::-webkit-inner-spin-button,
-    .input-field[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    .input-field[type=number] { -moz-appearance: textfield; }
-
-    .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 0.8rem;
-      transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-
-    .btn-primary {
-      background: #f97316;
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background: #ea6c0a;
-      box-shadow: 0 6px 18px rgba(249,115,22,0.3);
-    }
-
-    .btn-ghost {
-      background: #1c1917;
-      color: #a8a29e;
-      border: 1px solid #292524;
-    }
-    .btn-ghost:hover { background: #292524; color: #e7e5e4; }
-
-    .btn-danger {
-      background: rgba(239,68,68,0.1);
-      color: #f87171;
-      border: 1px solid rgba(239,68,68,0.2);
-    }
-    .btn-danger:hover { background: rgba(239,68,68,0.2); }
-
-    .btn-back {
-      background: #292524;
-      color: #a8a29e;
-    }
-    .btn-back:hover { background: #3c3836; color: #e7e5e4; }
-
-    #result {
-      margin-top: 0;
-      background: #1c1917;
-      border: 1px solid #292524;
-      border-radius: 12px;
-      padding: 14px;
-      min-height: 48px;
-      white-space: pre-wrap;
-      font-size: 0.8rem;
-      color: #a8a29e;
-      font-family: 'DM Sans', monospace;
-      line-height: 1.6;
-    }
+    body{font-family:'DM Sans',sans-serif;margin:0;background:#09090b;color:#e7e5e4;}
+    .syne{font-family:'Syne',sans-serif;}
+    .panel{background:#18181b;border:1px solid #27272a;border-radius:16px;}
+    .input-field{width:100%;background:#0f0f12;border:1px solid #27272a;border-radius:12px;padding:11px 14px;color:#e7e5e4;font-size:.875rem;outline:none;box-sizing:border-box;}
+    .input-field:focus{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.15);}
+    .btn{padding:10px 18px;border:none;border-radius:12px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;font-size:.8rem;transition:transform .15s,box-shadow .15s,background .2s,color .2s;}
+    .btn:hover{transform:translateY(-1px);} .btn-primary{background:#f97316;color:#fff;} .btn-primary:hover{background:#ea6c0a;box-shadow:0 6px 18px rgba(249,115,22,.3);} .btn-ghost{background:#18181b;color:#d4d4d8;border:1px solid #3f3f46;} .btn-danger{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);} 
+    pre{white-space:pre-wrap;word-break:break-word;}
   </style>
 </head>
-<body class="flex bg-slate-100 min-h-screen">
-  <aside class="w-60 bg-slate-800 text-white min-h-screen p-4 flex flex-col">
+<body>
+<div class="min-h-screen flex">
+  <aside class="w-64 bg-zinc-900 border-r border-zinc-800 text-white flex flex-col p-5">
+    <h2 class="text-2xl font-bold mb-8 syne">Admin Panel</h2>
+    <nav class="flex flex-col gap-3 flex-1">
+      <a href="admin-dashboard.html" class="p-3 rounded hover:bg-zinc-800 transition">Dashboard</a>
+      <a href="student.html" class="bg-zinc-800 p-3 rounded transition">Manage Students</a>
+    </nav>
+    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 transition p-3 rounded mt-6">Logout</button>
+  </aside>
 
-<h2 class="text-xl font-bold mb-6">Student Panel</h2>
-
-<nav class="flex flex-col gap-2 flex-1">
-
-<a href="student-dashboard.html" class="p-2 hover:bg-slate-700 rounded">
-Dashboard
-</a>
-
-<a href="student.html" class="bg-slate-700 p-2 rounded">
-Students
-</a>
-
-<a href="#" class="p-2 hover:bg-slate-700 rounded">
-Profile
-</a>
-
-</nav>
-
-<button onclick="logout()" class="bg-red-600 p-2 rounded mt-4">
-Logout
-</button>
-
-</aside>
-  <div class="grain"></div>
-
-  <!-- Background glow -->
-  <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500 rounded-full blur-[140px] opacity-10 pointer-events-none"></div>
-
-  <!-- Card -->
-  <div class="card relative z-10 w-full max-w-md bg-stone-900 border border-stone-800 rounded-2xl shadow-2xl overflow-hidden">
-
-    <!-- Header -->
-    <div class="px-6 py-5 border-b border-stone-800 flex items-center gap-3">
-      <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-        </svg>
-      </div>
+  <main class="flex-1 p-6 space-y-6">
+    <div class="panel p-6 flex items-center justify-between gap-4">
       <div>
-        <h2 class="syne text-white font-bold text-lg leading-tight">Student Management</h2>
-        <p class="text-stone-500 text-xs">Add, view or remove students</p>
+        <h1 class="text-2xl font-bold syne">Student Management</h1>
+        <p class="text-zinc-400 text-sm mt-1">Admin-only page for create, read, update and delete operations.</p>
+      </div>
+      <div class="text-right text-sm text-zinc-300">
+        <div class="font-semibold">Logged in as</div>
+        <div id="adminName" class="text-orange-400"></div>
       </div>
     </div>
 
-    <!-- Form -->
-    <div class="px-6 py-5 space-y-3">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="panel p-6 space-y-4">
+        <h3 class="text-lg font-semibold syne">Student Form</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Student ID</label>
+            <input type="text" id="id" placeholder="Required for get, update, delete" class="input-field">
+          </div>
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Full Name</label>
+            <input type="text" id="name" placeholder="Enter full name" class="input-field">
+          </div>
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Branch</label>
+            <input type="text" id="branch" placeholder="Computer Science" class="input-field">
+          </div>
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Year</label>
+            <input type="number" id="year" min="1" max="4" placeholder="1 - 4" class="input-field">
+          </div>
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">CGPA</label>
+            <input type="number" id="cgpa" min="0" max="10" step="0.01" placeholder="8.50" class="input-field">
+          </div>
+          <div>
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Email</label>
+            <input type="email" id="email" placeholder="student@example.com" class="input-field">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-zinc-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Phone</label>
+            <input type="tel" id="phone" placeholder="Enter phone number" class="input-field">
+          </div>
+        </div>
 
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Student ID</label>
-        <input type="text" id="id" placeholder="Enter student ID" class="input-field" required>
-      </div>
-
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Full Name</label>
-        <input type="text" id="name" placeholder="Enter full name" class="input-field" required>
-      </div>
-      
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Branch</label>
-        <input type="text" id="branch" placeholder="e.g. Computer Science" class="input-field" required>
-      </div>
-
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">CGPA</label>
-        <input type="text" id="cgpa" placeholder="e.g. 8.5" class="input-field" required>
-      </div>
-
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Year</label>
-        <input type="number" id="year" min="1" max="4" placeholder="1 – 4" class="input-field" required>
-      </div>
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Email</label>
-        <input type="email" id="email" placeholder="Enter email address" class="input-field" required>
-      </div>
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Phone</label>
-        <input type="tel" id="phone" placeholder="Enter phone number" class="input-field" required>
-      </div>
-      <!-- Action Buttons -->
-      <div class="pt-1 flex flex-wrap gap-2">
-        <button class="btn btn-primary" onclick="addStudent()">
-          Add Student
-        </button>
-        <button class="btn btn-ghost" onclick="getStudents()">
-          Get All
-        </button>
-        <button class="btn btn-ghost" onclick="getById()">
-          Get By ID
-        </button>
-        <button class="btn btn-danger" onclick="deleteStudent()">
-          Delete
-        </button>
-        <button class="btn btn-back" onclick="goBack()">
-          ← Back
-        </button>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button class="btn btn-primary" onclick="addStudent()">Add</button>
+          <button class="btn btn-primary" onclick="updateStudent()">Update</button>
+          <button class="btn btn-ghost" onclick="getStudents()">Get All</button>
+          <button class="btn btn-ghost" onclick="getById()">Get By ID</button>
+          <button class="btn btn-danger" onclick="deleteStudent()">Delete</button>
+          <button class="btn btn-ghost" onclick="window.location.href='admin-dashboard.html'">Back</button>
+        </div>
       </div>
 
-      <!-- Result -->
-      <div>
-        <label class="block text-stone-400 text-xs syne font-semibold uppercase tracking-widest mb-1.5">Result</label>
-        <div id="result">Output will appear here...</div>
+      <div class="panel p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold syne">Result</h3>
+          <button class="btn btn-ghost" onclick="clearResult()">Clear</button>
+        </div>
+        <pre id="result" class="text-sm text-zinc-300 min-h-[460px]">Output will appear here...</pre>
       </div>
-
     </div>
-  </div>
+  </main>
+</div>
 
 <script>
-  if (!localStorage.getItem("token")) {
-  window.location.href = "index.html";
+function requireRole(role) {
+  const token = localStorage.getItem('token');
+  const storedRole = (localStorage.getItem('role') || '').toUpperCase();
+  if (!token || storedRole !== role) {
+    localStorage.clear();
+    window.location.replace('index.html');
+    return false;
   }
-  const baseUrl = "/students";
-  function getToken(){
-    var token = localStorage.getItem("token");
-    if (token == null) {
-      return null;
-    }
-    return "Bearer " + token;
-  }
-function clearFields(){
-  document.getElementById("id").value = "";
-  document.getElementById("name").value = "";
-  document.getElementById("branch").value = "";
-  document.getElementById("year").value = "";
-  document.getElementById("cgpa").value = "";
-  document.getElementById("email").value = "";
-  document.getElementById("phone").value = "";
+  return true;
 }
-function addStudent(){
-  var token = getToken();
-  if (token == null) {
-    document.getElementById("result").innerText = "Please login first.";
-    return;
-  }
-  var student ={
-    name: document.getElementById("name").value,
-    branch: document.getElementById("branch").value,
-    year: document.getElementById("year").value,
-    cgpa: document.getElementById("cgpa").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value
-  };
-  fetch(baseUrl,{
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": token
-    },
-    body: JSON.stringify(student)
-  })
-  .then(function(response) {
-    if (response.status == 200 || response.status == 201) {
-      return response.json();
-    } else {
-      throw "Error";
-    }
-  })
-  .then(function(data) {
-    document.getElementById("result").innerText ="Student added successfully:\n" +
-      JSON.stringify(data, null, 2);
-    clearFields();
-  })
-  .catch(function() {
-    document.getElementById("result").innerText ="Something went wrong while adding student.";
-  });
+
+const baseUrl = "/api/students";
+
+function getToken() {
+  const token = localStorage.getItem('token');
+  return token ? 'Bearer ' + token : null;
 }
-function getStudents(){
-  var token = getToken();
-  if (token == null) {
-    document.getElementById("result").innerText = "Please login first.";
-    return;
-  }
-  fetch(baseUrl,{
-    method: "GET",
-    headers: {
-      "Authorization": token
-    }
-  })
-  .then(function(response){
-    if (response.status == 200){
-      return response.json();
-    } else {
-      throw "Error";
-    }
-  })
-  .then(function(data){
-    document.getElementById("result").innerText =JSON.stringify(data, null, 2);
-  })
-  .catch(function(){
-    document.getElementById("result").innerText ="Unable to fetch students.";
-  });
+
+function authHeaders(json = false) {
+  const headers = { 'Authorization': getToken() };
+  if (json) headers['Content-Type'] = 'application/json';
+  return headers;
 }
-function logout(){
+
+function showResult(value) {
+  document.getElementById('result').innerText = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+}
+
+function clearResult() {
+  showResult('Output will appear here...');
+}
+
+function logout() {
   localStorage.clear();
-  window.location.href = "index.html";
+  window.location.href = 'index.html';
 }
-function getById(){
-  var id = document.getElementById("id").value;
-  var token = getToken();
-  if(id==""){
-    document.getElementById("result").innerText = "Enter ID first.";
-    return;
-  }
-  if (token==null){
-    document.getElementById("result").innerText = "Please login first.";
-    return;
-  }
-  fetch(baseUrl + "/" + id,{
-    method: "GET",
-    headers: {
-      "Authorization": token
-    }
-  })
-  .then(function(response){
-    if (response.status == 200){
-      return response.json();
-    }else{
-      throw "Not Found";
-    }
-  })
-  .then(function(data){
-    document.getElementById("result").innerText =JSON.stringify(data, null, 2);
-  })
-  .catch(function(){
-    document.getElementById("result").innerText ="Student not found or unauthorized.";
-  });
+
+function clearFields() {
+  ['id','name','branch','year','cgpa','email','phone'].forEach(id => document.getElementById(id).value = '');
 }
-function deleteStudent(){
-  var id = document.getElementById("id").value;
-  var token = getToken();
-  if(id==""){
-    document.getElementById("result").innerText = "Enter ID to delete.";
-    return;
+
+function collectStudentPayload() {
+  return {
+    name: document.getElementById('name').value.trim(),
+    branch: document.getElementById('branch').value.trim(),
+    year: document.getElementById('year').value ? Number(document.getElementById('year').value) : null,
+    cgpa: document.getElementById('cgpa').value ? Number(document.getElementById('cgpa').value) : null,
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim()
+  };
+}
+
+async function addStudent() {
+  const student = collectStudentPayload();
+  try {
+    const response = await fetch(baseUrl, {
+      method: 'POST',
+      headers: authHeaders(true),
+      body: JSON.stringify(student)
+    });
+    const data = await safeJson(response);
+    if (!response.ok) throw new Error(extractError(data, 'Failed to add student.'));
+    showResult(data);
+    clearFields();
+  } catch (err) {
+    showResult(err.message);
   }
-  if(token==null){
-    document.getElementById("result").innerText = "Please login first.";
-    return;
+}
+
+async function updateStudent() {
+  const id = document.getElementById('id').value.trim();
+  if (!id) return showResult('Enter student ID first.');
+  const student = collectStudentPayload();
+  try {
+    const response = await fetch(baseUrl + '/' + id, {
+      method: 'PUT',
+      headers: authHeaders(true),
+      body: JSON.stringify(student)
+    });
+    const data = await safeJson(response);
+    if (!response.ok) throw new Error(extractError(data, 'Failed to update student.'));
+    showResult(data);
+  } catch (err) {
+    showResult(err.message);
   }
-  fetch(baseUrl+"/"+id,{
-    method: "DELETE",
-    headers: {
-      "Authorization": token
-    }
-  })
-  .then(function(response){
-    if (response.status == 204){
-      document.getElementById("result").innerText ="Student deleted successfully.";
+}
+
+async function getStudents() {
+  try {
+    const response = await fetch(baseUrl, { headers: authHeaders() });
+    const data = await safeJson(response);
+    if (!response.ok) throw new Error(extractError(data, 'Unable to fetch students.'));
+    showResult(data);
+  } catch (err) {
+    showResult(err.message);
+  }
+}
+
+async function getById() {
+  const id = document.getElementById('id').value.trim();
+  if (!id) return showResult('Enter ID first.');
+  try {
+    const response = await fetch(baseUrl + '/' + id, { headers: authHeaders() });
+    const data = await safeJson(response);
+    if (!response.ok) throw new Error(extractError(data, 'Student not found.'));
+    showResult(data);
+  } catch (err) {
+    showResult(err.message);
+  }
+}
+
+async function deleteStudent() {
+  const id = document.getElementById('id').value.trim();
+  if (!id) return showResult('Enter ID to delete.');
+  try {
+    const response = await fetch(baseUrl + '/' + id, {
+      method: 'DELETE',
+      headers: authHeaders()
+    });
+    if (response.status === 204) {
+      showResult('Student deleted successfully.');
       clearFields();
+      return;
     }
-    else if (response.status == 401 || response.status == 403){
-      document.getElementById("result").innerText ="Unauthorized. Login again.";
-    }
-    else{
-      document.getElementById("result").innerText ="Student not found.";
-    }
-  })
-  .catch(function(){  
-    document.getElementById("result").innerText ="Error while deleting student.";
-  });
+    const data = await safeJson(response);
+    throw new Error(extractError(data, 'Failed to delete student.'));
+  } catch (err) {
+    showResult(err.message);
+  }
 }
-function goBack(){
-  window.location.href = "student-dashboard.html";
+async function safeJson(response) {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch (_) {
+    return text;
+  }
+}
+ function extractError(data, fallback) {
+  if (!data) return fallback;
+
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (data.message) {
+    return data.message;
+  }
+
+  if (data.error) {
+    return data.error;
+  }
+
+  if (typeof data === 'object') {
+    const entries = Object.entries(data);
+    if (entries.length) {
+      return entries.map(([key, value]) => `${key}: ${value}`).join('\n');
+    }
+  }
+
+  return fallback;
+}
+
+if (requireRole('ADMIN')) {
+  document.getElementById('adminName').innerText = localStorage.getItem('username') || 'Admin';
 }
 </script>
 </body>

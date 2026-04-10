@@ -1,14 +1,12 @@
 package com.example.demo.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Document(collection = "students")
 public class Student {
@@ -29,7 +27,7 @@ public class Student {
     private String phone;
     public Student(){
     }
-    public Student(String id, String name, String branch, int year) {
+    public Student(String id, String name, String branch, int year){
         this.id = id;
         this.name = name;
         this.branch = branch;
@@ -47,41 +45,37 @@ public class Student {
     public String getName(){
         return name;
     }
-    public Double getCgpa() {
+    public Double getCgpa(){
         return cgpa;
     }
     public void setCgpa(Double cgpa){
         this.cgpa = cgpa;
     }
-    public String getEmail() {
+    public String getEmail(){
         return email;
     }
-    public void setEmail(String email) {
+    public void setEmail(String email){
         this.email = email;
     }
-    public String getPhone() {
+    public String getPhone(){
         return phone;
     }
-    public void setPhone(String phone) {
+    public void setPhone(String phone){
         this.phone = phone;
     }
-    public void setName(String name) {
+    public void setName(String name){
         this.name = name;
     }
-
-    public String getBranch() {
+    public String getBranch(){
         return branch;
     }
-
-    public void setBranch(String branch) {
+    public void setBranch(String branch){
         this.branch = branch;
     }
-
-    public int getYear() {
+    public Integer getYear(){
         return year;
     }
-
-    public void setYear(int year) {
+    public void setYear(Integer year){
         this.year = year;
     }
 }

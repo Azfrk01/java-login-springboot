@@ -2,189 +2,69 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Student Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="flex bg-slate-100">
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Sidebar -->
-<aside class="w-60 bg-slate-800 text-white min-h-screen p-4 flex flex-col">
-
-<h2 class="text-xl font-bold mb-6">Student Panel</h2>
-
-<nav class="flex flex-col gap-2 flex-1">
-
-<a href="student-dashboard.html" class="bg-slate-700 p-2 rounded">
-Dashboard
-</a>
-
-<a href="student.html" class="p-2 hover:bg-slate-700 rounded">
-Students
-</a>
-
-<a href="#" class="p-2 hover:bg-slate-700 rounded">
-Profile
-</a>
-
-</nav>
-
-<button onclick="logout()" class="bg-red-600 p-2 rounded mt-4">
-Logout
-</button>
-
-</aside>
-
-<!-- Main -->
-<div class="flex-1">
-
-<!-- Navbar -->
-<header class="bg-white shadow p-4 flex justify-between">
-
-<h2 class="text-lg font-semibold">
-Student Dashboard
-</h2>
-
-<div>
-
-<span id="username"></span>
-
-</div>
-
-</header>
-
-<!-- Content -->
-<div class="p-6">
-
-<h1 class="text-2xl font-bold mb-4">
-Welcome <span id="welcomeUsername"></span>
-</h1>
-
-<div class="bg-white p-6 rounded shadow">
-
-Dashboard content here
-
-</div><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="flex bg-slate-100 min-h-screen">
-
-<!-- Sidebar -->
 <aside class="w-64 bg-slate-800 text-white flex flex-col p-5">
-
-<h2 class="text-2xl font-bold mb-8">Student Panel</h2>
-
-<nav class="flex flex-col gap-3 flex-1">
-
-<a href="student-dashboard.html"
-   class="bg-slate-700 p-3 rounded hover:bg-slate-600 transition">
-   Dashboard
-</a>
-
-<a href="student.html"
-   class="p-3 rounded hover:bg-slate-700 transition">
-   Students
-</a>
-
-<a href="#"
-   class="p-3 rounded hover:bg-slate-700 transition">
-   Profile
-</a>
-
-</nav>
-
-<button onclick="logout()"
-        class="bg-red-600 hover:bg-red-700 transition p-3 rounded mt-6">
-        Logout
-</button>
-
+  <h2 class="text-2xl font-bold mb-8">Student Panel</h2>
+  <nav class="flex flex-col gap-3 flex-1">
+    <a href="student-dashboard.html" class="bg-slate-700 p-3 rounded hover:bg-slate-600 transition">Dashboard</a>
+  </nav>
+  <button onclick="logout()" class="bg-red-600 hover:bg-red-700 transition p-3 rounded mt-6">Logout</button>
 </aside>
 
-<!-- Main Content -->
 <div class="flex-1 flex flex-col">
+  <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
+    <h2 class="text-lg font-semibold">Student Dashboard</h2>
+    <div class="font-medium text-slate-700">Welcome, <span id="username" class="text-blue-600"></span></div>
+  </header>
 
-<!-- Navbar -->
-<header class="bg-white shadow px-6 py-4 flex justify-between items-center">
+  <main class="p-6 flex-1 space-y-6">
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h1 class="text-2xl font-bold mb-2">Welcome <span id="welcomeUsername" class="text-blue-600"></span></h1>
+      <p class="text-slate-600">You are logged in as a student. This dashboard is read-only and does not allow admin actions.</p>
+    </div>
 
-<h2 class="text-lg font-semibold">
-Student Dashboard
-</h2>
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Account Info</h3>
+      <div class="space-y-2 text-slate-700">
+        <p><span class="font-semibold">Username:</span> <span id="infoUsername"></span></p>
+        <p><span class="font-semibold">Role:</span> STUDENT</p>
+      </div>
+    </div>
 
-<div class="font-medium text-slate-700">
-Welcome, <span id="username" class="text-blue-600"></span>
-</div>
-
-</header>
-
-<!-- Content -->
-<main class="p-6 flex-1">
-
-<h1 class="text-2xl font-bold mb-6">
-Welcome <span id="welcomeUsername" class="text-blue-600"></span>
-</h1>
-
-<div class="bg-white p-6 rounded-lg shadow">
-
-<p class="text-slate-600">
-Dashboard content here
-</p>
-
-</div>
-
-</main>
-
+    <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-lg shadow-sm">
+      <h3 class="text-lg font-semibold mb-2 text-yellow-900">Access Notice</h3>
+      <p class="text-yellow-800">Student accounts cannot add, edit, or delete student records from the frontend.</p>
+    </div>
+  </main>
 </div>
 
 <script>
-
-if (!localStorage.getItem("token")) {
-  window.location.href = "index.html";
+function requireRole(role) {
+  const token = localStorage.getItem('token');
+  const storedRole = (localStorage.getItem('role') || '').toUpperCase();
+  if (!token || storedRole !== role) {
+    localStorage.clear();
+    window.location.replace('index.html');
+    return false;
+  }
+  return true;
 }
-
-document.getElementById("username").innerText =
-  localStorage.getItem("username");
-
-document.getElementById("welcomeUsername").innerText =
-  localStorage.getItem("username");
 
 function logout(){
   localStorage.clear();
-  window.location.href = "index.html";
+  window.location.href = 'index.html';
 }
 
+if (requireRole('STUDENT')) {
+  const username = localStorage.getItem('username') || 'Student';
+  document.getElementById('username').innerText = username;
+  document.getElementById('welcomeUsername').innerText = username;
+  document.getElementById('infoUsername').innerText = username;
+}
 </script>
-
 </body>
 </html>
-
-</div>
-
-</div>
-
-<script>
-
-if (!localStorage.getItem("token")) {
-  window.location.href = "index.html";
-}
-
-document.getElementById("username").innerText =
-  localStorage.getItem("username");
-
-document.getElementById("welcomeUsername").innerText =
-  localStorage.getItem("username");
-
-function logout(){
-  localStorage.clear();
-  window.location.href = "index.html";
-}
-
-</script>
-
-</body></html>
