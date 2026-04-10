@@ -41,9 +41,8 @@
     </div>
   </main>
 </div>
-
 <script>
-function requireRole(role) {
+function requireRole(role){
   const token = localStorage.getItem('token');
   const storedRole = (localStorage.getItem('role') || '').toUpperCase();
   if (!token || storedRole !== role) {
@@ -53,13 +52,11 @@ function requireRole(role) {
   }
   return true;
 }
-
 function logout(){
   localStorage.clear();
   window.location.href = 'index.html';
 }
-
-if (requireRole('STUDENT')) {
+if (requireRole('STUDENT')){
   const username = localStorage.getItem('username') || 'Student';
   document.getElementById('username').innerText = username;
   document.getElementById('welcomeUsername').innerText = username;

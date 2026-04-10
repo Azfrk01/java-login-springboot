@@ -235,28 +235,23 @@ async function safeJson(response) {
     return text;
   }
 }
- function extractError(data, fallback) {
+ function extractError(data, fallback){
   if (!data) return fallback;
-
-  if (typeof data === 'string') {
+  if (typeof data === 'string'){
     return data;
   }
-
-  if (data.message) {
+  if (data.message){
     return data.message;
   }
-
-  if (data.error) {
+  if (data.error){
     return data.error;
   }
-
-  if (typeof data === 'object') {
+  if (typeof data === 'object'){
     const entries = Object.entries(data);
-    if (entries.length) {
+    if (entries.length){
       return entries.map(([key, value]) => `${key}: ${value}`).join('\n');
     }
   }
-
   return fallback;
 }
 

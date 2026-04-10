@@ -82,9 +82,8 @@
     </div>
   </div>
 </main>
-
 <script>
-function requireRole(role) {
+function requireRole(role){
   const token = localStorage.getItem('token');
   const storedRole = (localStorage.getItem('role') || '').toUpperCase();
   if (!token || storedRole !== role) {
@@ -94,48 +93,40 @@ function requireRole(role) {
   }
   return true;
 }
-
-function authHeaders() {
+function authHeaders(){
   return {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   };
 }
-
-function logout() {
+function logout(){
   localStorage.clear();
   window.location.href = 'index.html';
 }
-
-function setIdentity() {
+function setIdentity(){
   const username = localStorage.getItem('username') || 'Admin';
   document.getElementById('navUsername').innerText = username;
   document.getElementById('welcomeUsername').innerText = username;
 }
-
-async function loadStats() {
-  try {
+async function loadStats(){
+  try{
     const res = await fetch('/students/stats', { headers: authHeaders() });
     if (res.status === 401 || res.status === 403) throw new Error('Unauthorized');
     if (!res.ok) throw new Error('Failed to load stats');
     const data = await res.json();
-
     const totalStudents = data.totalStudents ?? 0;
     const averageCgpa = Number(data.averageCgpa ?? 0).toFixed(2);
     const branchCounts = data.branchCounts || data.branchStats || {};
     const yearCounts = data.yearCounts || {};
-
     document.getElementById('totalStudents').innerText = totalStudents;
     document.getElementById('avgCgpa').innerText = averageCgpa;
     document.getElementById('branchCount').innerText = Object.keys(branchCounts).length;
     document.getElementById('yearCount').innerText = Object.keys(yearCounts).length;
-
     renderBranchBreakdown(branchCounts, totalStudents);
   } catch (err) {
     document.getElementById('branchBreakdown').innerHTML = '<p class="text-red-400">Unable to load stats.</p>';
   }
 }
-
-function renderBranchBreakdown(branchCounts, totalStudents) {
+function renderBranchBreakdown(branchCounts, totalStudents){
   const container = document.getElementById('branchBreakdown');
   const entries = Object.entries(branchCounts);
   if (!entries.length) {
@@ -181,8 +172,7 @@ async function loadRecentStudents() {
     container.innerHTML = '<p class="text-red-400">Unable to load recent students.</p>';
   }
 }
-
-if (requireRole('ADMIN')) {
+if(requireRole('ADMIN')){
   setIdentity();
   loadStats();
   loadRecentStudents();

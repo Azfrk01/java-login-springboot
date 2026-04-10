@@ -25,11 +25,10 @@ public class StudentService{
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
-    public void deleteStudent(String id){
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Student not found");
-        }
-        repository.deleteById(id);
+    public void deleteStudent(String id) {
+    Student student = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+    repository.delete(student);
     }
     public Student updateStudent(String id, Student studentDetails){
         Student student = repository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Approval</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: white;
+        }
+        .container{
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        h1{
+            margin-bottom: 10px;
+        }
+        p{
+            margin-bottom: 20px;
+        }
+        button{
+            padding: 10px 20px;
+            border: none;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover{
+            background: #ff4757;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Account Pending</h1>
+    <p>Your account is not approved yet.</p>
+    <p>Please contact the administrator.</p>
+    <button onclick="logout()">Logout</button>
+</div>
+<script>
+    function requireToken(){
+        const token=localStorage.getItem("token");
+        if (!token){
+            window.location.href = "index.html";
+        }
+    }
+    function logout(){
+        localStorage.clear();
+        window.location.href="index.html";
+    }
+    requireToken();
+</script>
+</body>
+</html>

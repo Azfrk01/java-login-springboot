@@ -108,13 +108,17 @@ async function login(e){
     if (role !== 'ADMIN' && role !== 'STUDENT'){
       throw new Error('Invalid role returned from server.');
     }
-    localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
-    localStorage.setItem('username', username);
-    if(role === 'ADMIN'){
-      window.location.href = 'admin-dashboard.html';
-    }else{
-      window.location.href = 'student-dashboard.html';
+    localStorage.setItem("token", result.token);
+    localStorage.setItem("role", result.role.toUpperCase());
+    localStorage.setItem("username", username);
+    if (result.role.toUpperCase() === "ADMIN"){
+      window.location.href = "admin-dashboard.html";
+    }
+    else if(result.role.toUpperCase() === "STUDENT"){
+      window.location.href = "student-dashboard.html";
+    }
+    else{
+    window.location.href = "pending.html";
     }
   }catch(err){
     clearAuthStorage();

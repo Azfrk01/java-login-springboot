@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+import com.example.demo.dto.StatsResponse;
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
 import jakarta.validation.Valid;
@@ -63,8 +64,7 @@ public class StudentController{
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/stats")
-    public ResponseEntity<?> getStats() {
-        Object stats = service.getStats();
-        return ResponseEntity.ok(stats);
+    public ResponseEntity<StatsResponse> getStats(){
+        return ResponseEntity.ok(service.getStats());
     }
 }

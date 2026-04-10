@@ -46,9 +46,6 @@ public class AuthService{
                 existingUser.getUsername(),
                 existingUser.getRole()
         );
-        return new LoginResponse(
-                token,
-                existingUser.getRole()
-        );
+        return new LoginResponse(token,existingUser.getRole());
     }
 }
