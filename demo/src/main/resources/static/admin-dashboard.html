@@ -61,6 +61,12 @@
       <div class="card"><p class="text-stone-400 text-sm">Average CGPA</p><h2 id="avgCgpa" class="text-3xl font-bold mt-2">0.00</h2></div>
       <div class="card"><p class="text-stone-400 text-sm">Branches</p><h2 id="branchCount" class="text-3xl font-bold mt-2">0</h2></div>
       <div class="card"><p class="text-stone-400 text-sm">Years Covered</p><h2 id="yearCount" class="text-3xl font-bold mt-2">0</h2></div>
+      <div class="card"><p class="text-stone-400 text-sm">Total Users</p><h2 id="totalUsers" class="text-3xl font-bold">0</h2></div>
+    </div>
+  <div class="bg-white p-4 rounded shadow">
+    <p class="text-gray-500">Pending Approvals</p>
+    <h2 id="pendingApprovals" class="text-3xl font-bold">0</h2>
+  </div>
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -83,97 +89,92 @@
   </div>
 </main>
 <script>
-function requireRole(role){
-  const token = localStorage.getItem('token');
-  const storedRole = (localStorage.getItem('role') || '').toUpperCase();
-  if (!token || storedRole !== role) {
-    localStorage.clear();
-    window.location.replace('index.html');
-    return false;
-  }
-  return true;
-}
 function authHeaders(){
   return {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   };
-}
-function logout(){
-  localStorage.clear();
-  window.location.href = 'index.html';
 }
 function setIdentity(){
   const username = localStorage.getItem('username') || 'Admin';
   document.getElementById('navUsername').innerText = username;
   document.getElementById('welcomeUsername').innerText = username;
 }
-async function loadStats(){
-  try{
-    const res = await fetch('/students/stats', { headers: authHeaders() });
-    if (res.status === 401 || res.status === 403) throw new Error('Unauthorized');
-    if (!res.ok) throw new Error('Failed to load stats');
-    const data = await res.json();
-    const totalStudents = data.totalStudents ?? 0;
-    const averageCgpa = Number(data.averageCgpa ?? 0).toFixed(2);
-    const branchCounts = data.branchCounts || data.branchStats || {};
-    const yearCounts = data.yearCounts || {};
-    document.getElementById('totalStudents').innerText = totalStudents;
-    document.getElementById('avgCgpa').innerText = averageCgpa;
-    document.getElementById('branchCount').innerText = Object.keys(branchCounts).length;
-    document.getElementById('yearCount').innerText = Object.keys(yearCounts).length;
-    renderBranchBreakdown(branchCounts, totalStudents);
-  } catch (err) {
-    document.getElementById('branchBreakdown').innerHTML = '<p class="text-red-400">Unable to load stats.</p>';
-  }
-}
-function renderBranchBreakdown(branchCounts, totalStudents){
-  const container = document.getElementById('branchBreakdown');
-  const entries = Object.entries(branchCounts);
-  if (!entries.length) {
-    container.innerHTML = '<p class="text-stone-500">No branch data available.</p>';
-    return;
-  }
-  container.innerHTML = entries.map(([branch, count]) => {
-    const percent = totalStudents ? Math.round((count / totalStudents) * 100) : 0;
-    return `
-      <div>
-        <div class="flex justify-between mb-1"><span>${branch}</span><span>${count}</span></div>
-        <div class="w-full bg-stone-800 h-3 rounded-full overflow-hidden">
-          <div class="bg-orange-500 h-3" style="width:${percent}%"></div>
-        </div>
-      </div>`;
-  }).join('');
-}
+async function loadStats() {
+  const res = await fetch("/students/stats", {
+    headers: authHeaders()
+  });
 
-async function loadRecentStudents() {
-  const container = document.getElementById('recentStudents');
-  container.innerHTML = '<p class="text-stone-500">Loading...</p>';
-  try {
-    const res = await fetch('/students?page=0&size=5&sort=id,desc', { headers: authHeaders() });
-    if (!res.ok) throw new Error('Failed to load students');
-    const data = await res.json();
-    const students = Array.isArray(data.content) ? data.content : (Array.isArray(data) ? data : []);
-    if (!students.length) {
-      container.innerHTML = '<p class="text-stone-500">No students found.</p>';
-      return;
-    }
-    container.innerHTML = students.map(student => `
-      <div class="border border-stone-800 rounded-xl p-4 bg-stone-950/40 flex items-center justify-between gap-4">
-        <div>
-          <p class="text-white font-semibold">${student.name || 'Unnamed'}</p>
-          <p class="text-stone-400 text-xs">${student.branch || '-'} • Year ${student.year ?? '-'}</p>
+  const data = await res.json();
+
+  document.getElementById("totalStudents").innerText = data.totalStudents ?? 0;
+  document.getElementById("avgCgpa").innerText = Number(data.averageCgpa ?? 0).toFixed(2);
+  document.getElementById("totalUsers").innerText = data.totalUsers ?? 0;
+  document.getElementById("pendingApprovals").innerText = data.pendingApprovals ?? 0;
+
+  loadBranchBreakdown(data.branchCounts || {});
+}
+function loadBranchBreakdown(branchCounts) {
+  const container = document.getElementById("branchBreakdown");
+  container.innerHTML = "";
+
+  const total = Object.values(branchCounts).reduce((a, b) => a + b, 0);
+
+  for (let branch in branchCounts) {
+    const count = branchCounts[branch];
+    const percent = total ? (count / total) * 100 : 0;
+
+    container.innerHTML += `
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span>${branch}</span>
+          <span>${count}</span>
         </div>
-        <div class="text-right">
-          <p class="text-stone-300 text-xs">CGPA ${student.cgpa ?? '-'}</p>
-          <p class="text-stone-500 text-xs">${student.id || ''}</p>
+        <div class="w-full bg-gray-200 h-3 rounded">
+          <div class="bg-blue-500 h-3 rounded" style="width:${percent}%"></div>
         </div>
-      </div>`).join('');
-  } catch (err) {
-    container.innerHTML = '<p class="text-red-400">Unable to load recent students.</p>';
+      </div>
+    `;
   }
 }
-if(requireRole('ADMIN')){
-  setIdentity();
+async function loadRecentStudents() {
+  const res = await fetch("/students?page=0&size=5&sort=id,desc", {
+    headers: authHeaders()
+  });
+  const data = await res.json();
+  const container = document.getElementById("recentStudents");
+  container.innerHTML = "";
+  const students = Array.isArray(data.content) ? data.content : [];
+  students.forEach(student =>{
+    container.innerHTML += `
+      <div class="flex justify-between border-b pb-2">
+        <div>
+          <p class="font-semibold">${student.name}</p>
+          <p class="text-gray-500 text-sm">${student.branch}</p>
+        </div>
+        <div class="text-gray-400 text-sm">
+          ID: ${student.id}
+        </div>
+      </div>
+    `;
+  });
+}
+function requireRole(role){
+  const token = localStorage.getItem("token");
+  const storedRole = (localStorage.getItem("role") || "").toUpperCase();
+  if (!token || storedRole !== role){
+    localStorage.clear();
+    window.location.replace("index.html");
+    return false;
+  }
+  return true;
+}
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+if (requireRole("ADMIN")){
+  const username = localStorage.getItem("username") || "Admin";
+  document.getElementById("username").innerText = username;
   loadStats();
   loadRecentStudents();
 }

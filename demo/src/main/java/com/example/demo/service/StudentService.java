@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import com.example.demo.model.Student;
 import com.example.demo.repositories.StudentRepo;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.dto.StatsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 @Service
 public class StudentService{
     private final StudentRepo repository;
-    public StudentService(StudentRepo repository){
+    private final UserRepository userRepository;
+    public StudentService(StudentRepo repository, UserRepository userRepository){
         this.repository = repository;
+        this.userRepository = userRepository;
     }
     public Student saveStudent(Student student){
         return repository.save(student);
@@ -44,16 +47,28 @@ public class StudentService{
         return repository.findByNameContainingIgnoreCase(name);
     }
     public StatsResponse getStats(){
-        List<Student> students = repository.findAll();
-        long total = students.size();
-        double avgCgpa = students.stream().mapToDouble(Student::getCgpa).average().orElse(0);
-        Map<String, Long> branchCounts = students.stream().collect(Collectors.groupingBy(Student::getBranch, Collectors.counting()));
-        Map<Integer, Long> yearCounts = students.stream().collect(Collectors.groupingBy(Student::getYear, Collectors.counting()));
-        StatsResponse stats = new StatsResponse();
-        stats.setTotalStudents(total);
-        stats.setAverageCgpa(avgCgpa);
-        stats.setBranchCounts(branchCounts);
-        stats.setYearCounts(yearCounts);
-        return stats;
+    List<Student> students = repository.findAll();
+    long total = students.size();
+    double avgCgpa = students.stream()
+            .mapToDouble(Student::getCgpa)
+            .average()
+            .orElse(0);
+    Map<String, Long> branchCounts = students.stream()
+            .collect(Collectors.groupingBy(Student::getBranch, Collectors.counting()));
+    Map<Integer, Long> yearCounts = students.stream()
+            .collect(Collectors.groupingBy(Student::getYear, Collectors.counting()));
+    long totalUsers = userRepository.count();
+    long pendingApprovals = userRepository.findAll()
+            .stream()
+            .filter(user -> "PENDING".equalsIgnoreCase(user.getRole()))
+            .count();
+    StatsResponse stats = new StatsResponse();
+    stats.setTotalStudents(total);
+    stats.setAverageCgpa(avgCgpa);
+    stats.setBranchCounts(branchCounts);
+    stats.setYearCounts(yearCounts);
+    stats.setTotalUsers(totalUsers);
+    stats.setPendingApprovals(pendingApprovals);
+    return stats;
     }
 }

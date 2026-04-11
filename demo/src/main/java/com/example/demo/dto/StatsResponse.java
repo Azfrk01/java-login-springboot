@@ -3,9 +3,11 @@ import java.util.Map;
 
 public class StatsResponse{
     private long totalStudents;
-    private Map<String, Long> branchCounts;
-    private Map<Integer, Long> yearCounts;
+    private Map<String, Long>branchCounts;
+    private Map<Integer, Long>yearCounts;
     private double averageCgpa;
+    private long totalUsers;
+    private long pendingApprovals;
     public long getTotalStudents(){
         return totalStudents;
     }
@@ -29,5 +31,17 @@ public class StatsResponse{
     }
     public void setYearCounts(Map<Integer, Long> yearCounts){
         this.yearCounts = yearCounts;
+    }
+    public long getTotalUsers(){
+    return totalUsers;
+    }
+    public void setTotalUsers(long totalUsers){
+        this.totalUsers = totalUsers;
+    }
+    public long getPendingApprovals(){
+        return pendingApprovals;
+    }
+    public void setPendingApprovals(long pendingApprovals){
+        this.pendingApprovals = pendingApprovals;
     }
 }
