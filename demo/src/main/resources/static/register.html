@@ -33,7 +33,7 @@
         </svg>
       </div>
       <h1 class="text-white text-2xl font-bold tracking-tight">Create Account</h1>
-      <p class="text-stone-400 text-sm mt-1 font-light">New users are registered as students</p>
+      <p class="text-stone-400 text-sm mt-1 font-light">New accounts require admin approval</p>
     </div>
 
     <form class="space-y-5" onsubmit="return registerUser(event)">
@@ -44,6 +44,13 @@
       <div>
         <label class="block text-stone-300 text-xs font-semibold uppercase tracking-widest mb-2">Password</label>
         <input id="password" type="password" placeholder="Create a password" required minlength="4" class="input-field w-full bg-stone-800 border border-stone-700 rounded-xl px-4 py-3 text-white placeholder-stone-500 text-sm" />
+      </div>
+      <div>
+        <label class="block text-stone-300 text-xs font-semibold uppercase tracking-widest mb-2">Register As</label>
+        <select id="role" class="input-field w-full bg-stone-800 border border-stone-700 rounded-xl px-4 py-3 text-white text-sm">
+        <option value="STUDENT">Student</option>
+        <option value="ADMIN">Admin</option>
+        </select>
       </div>
       <p id="message" class="error"></p>
       <button id="registerBtn" type="submit" class="btn-register btn-label w-full bg-orange-500 hover:bg-orange-400 text-white font-semibold rounded-xl py-3 text-sm tracking-wide mt-2">
@@ -76,22 +83,20 @@
 
       registerBtn.disabled = true;
       registerBtn.innerText = 'Registering...';
-
+      const role = document.getElementById('role').value;
       try {
         const response = await fetch('/api/auth/register', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ username, password, role: 'STUDENT' })
+          body: JSON.stringify({ username, password, role })
         });
-
         let result = {};
         try { result = await response.json(); } catch (_) { result = {}; }
         if (!response.ok) {
           throw new Error(result.message || result.error || 'Registration failed.');
         }
-
-        setMessage('Registration successful. You can log in now.', 'success');
-        setTimeout(() => window.location.href = 'index.html', 900);
+        setMessage('Registration submitted. Wait for admin approval before login.', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1200);
       } catch (err) {
         setMessage(err.message || 'Something went wrong during registration.');
       } finally {

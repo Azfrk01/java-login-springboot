@@ -16,7 +16,7 @@ public class AuthController{
     }
 @PostMapping("/register")
 public ResponseEntity<Map<String, String>> registerUser(@RequestBody AuthRequest req){
-        service.registerUser(req.getUsername(),req.getPassword(),null);
+        service.registerUser(req.getUsername(), req.getPassword(), req.getRole());
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message","User registered successfully"));
     }
     @PostMapping("/login")

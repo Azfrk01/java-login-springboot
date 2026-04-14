@@ -27,11 +27,11 @@ public class SecurityConfig{
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/students/**").hasAnyRole("ADMIN","STUDENT")
-                .requestMatchers("/*.html","/*.css","/*.js").permitAll()
-                .anyRequest().authenticated()
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/students/**").hasAnyRole("ADMIN", "STUDENT")
+            .requestMatchers("/*.html", "/*.css", "/*.js").permitAll()
+            .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
         return http.build();

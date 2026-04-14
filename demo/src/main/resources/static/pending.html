@@ -51,17 +51,13 @@
     <button onclick="logout()">Logout</button>
 </div>
 <script>
-    function requireToken(){
-        const token=localStorage.getItem("token");
-        if (!token){
-            window.location.href = "index.html";
-        }
-    }
     function logout(){
-        localStorage.clear();
-        window.location.href="index.html";
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("username");
+        localStorage.removeItem("pendingUsername");
+        window.location.href = "index.html";
     }
-    requireToken();
 </script>
 </body>
 </html>

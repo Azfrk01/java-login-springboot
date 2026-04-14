@@ -30,7 +30,7 @@
   </div>
   <nav class="flex flex-col gap-1 flex-1">
     <a href="admin-dashboard.html" class="nav-item active">Dashboard</a>
-    <a href="admin-students.html" class="nav-item">Manage Students</a>
+    <a href="admin-student.html" class="nav-item">Manage Students</a>
   </nav>
   <button onclick="logout()" class="nav-item w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 mt-2">Logout</button>
 </aside>
@@ -103,26 +103,20 @@ async function loadStats() {
   const res = await fetch("/api/students/stats", {
     headers: authHeaders()
   });
-
   const data = await res.json();
-
   document.getElementById("totalStudents").innerText = data.totalStudents ?? 0;
   document.getElementById("avgCgpa").innerText = Number(data.averageCgpa ?? 0).toFixed(2);
   document.getElementById("totalUsers").innerText = data.totalUsers ?? 0;
   document.getElementById("pendingApprovals").innerText = data.pendingApprovals ?? 0;
-
   loadBranchBreakdown(data.branchCounts || {});
 }
 function loadBranchBreakdown(branchCounts) {
   const container = document.getElementById("branchBreakdown");
   container.innerHTML = "";
-
   const total = Object.values(branchCounts).reduce((a, b) => a + b, 0);
-
   for (let branch in branchCounts) {
     const count = branchCounts[branch];
     const percent = total ? (count / total) * 100 : 0;
-
     container.innerHTML += `
       <div>
         <div class="flex justify-between text-sm mb-1">

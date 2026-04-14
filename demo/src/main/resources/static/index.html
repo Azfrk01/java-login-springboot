@@ -97,8 +97,17 @@ async function login(e){
     });
     let result = {};
     try { result = await response.json(); } catch (_) {}
-    if (!response.ok) {
-      throw new Error(result.message || 'Invalid username or password.');
+    if (!response.ok){
+      const errorMessage =result.message || result.error || 'Invalid username or password.';
+      if(errorMessage.toLowerCase().includes('pending approval')){
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        localStorage.setItem('pendingUsername', username);
+        window.location.href = 'pending.html';
+        return false;
+      }
+    throw new Error(errorMessage);
     }
     const role = typeof result.role === 'string' ? result.role.trim().toUpperCase() : '';
     const token = result.token;
@@ -116,9 +125,6 @@ async function login(e){
     }
     else if(result.role.toUpperCase() === "STUDENT"){
       window.location.href = "student-dashboard.html";
-    }
-    else{
-    window.location.href = "pending.html";
     }
   }catch(err){
     clearAuthStorage();
