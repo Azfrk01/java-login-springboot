@@ -30,7 +30,7 @@
   </div>
   <nav class="flex flex-col gap-1 flex-1">
     <a href="admin-dashboard.html" class="nav-item active">Dashboard</a>
-    <a href="student.html" class="nav-item">Manage Students</a>
+    <a href="admin-students.html" class="nav-item">Manage Students</a>
   </nav>
   <button onclick="logout()" class="nav-item w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 mt-2">Logout</button>
 </aside>
@@ -53,7 +53,7 @@
         <p class="text-stone-400 text-sm">Welcome back,</p>
         <h3 class="syne text-white text-xl font-bold mt-0.5"><span id="welcomeUsername"></span> 👋</h3>
       </div>
-      <button onclick="window.location.href='student.html'" class="btn-primary">Open Student Management</button>
+      <button onclick="window.location.href='admin-student.html'" class="btn-primary">Open Student Management</button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -100,7 +100,7 @@ function setIdentity(){
   document.getElementById('welcomeUsername').innerText = username;
 }
 async function loadStats() {
-  const res = await fetch("/students/stats", {
+  const res = await fetch("/api/students/stats", {
     headers: authHeaders()
   });
 
@@ -137,7 +137,7 @@ function loadBranchBreakdown(branchCounts) {
   }
 }
 async function loadRecentStudents() {
-  const res = await fetch("/students?page=0&size=5&sort=id,desc", {
+  const res = await fetch("/api/students?page=0&size=5&sort=id,desc", {
     headers: authHeaders()
   });
   const data = await res.json();
@@ -173,8 +173,7 @@ function logout(){
   window.location.href = "index.html";
 }
 if (requireRole("ADMIN")){
-  const username = localStorage.getItem("username") || "Admin";
-  document.getElementById("username").innerText = username;
+  setIdentity();
   loadStats();
   loadRecentStudents();
 }

@@ -32,11 +32,7 @@ public class StudentController{
     }
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable String id){
-        Student student = service.getStudentById(id);
-        if (student == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(service.getStudentById(id));
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
