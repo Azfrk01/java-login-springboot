@@ -95,8 +95,9 @@
         if (!response.ok) {
           throw new Error(result.message || result.error || 'Registration failed.');
         }
-        setMessage('Registration submitted. Wait for admin approval before login.', 'success');
-        setTimeout(() => window.location.href = 'index.html', 1200);
+        setMessage('Registration submitted. Your account is awaiting admin approval.', 'success');
+        localStorage.setItem('pendingUsername', username);
+        setTimeout(() => window.location.href = 'pending.html', 1200);
       } catch (err) {
         setMessage(err.message || 'Something went wrong during registration.');
       } finally {

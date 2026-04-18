@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users | EduPanel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    body{font-family:'DM Sans',sans-serif;}
+    .syne{font-family:'Syne',sans-serif;}
+  </style>
+</head>
+<body class="bg-stone-950 text-stone-100 min-h-screen flex">
+  <aside class="w-64 min-h-screen bg-stone-900 border-r border-stone-800 flex flex-col py-6 px-4">
+    <div class="mb-8">
+      <h2 class="syne text-white text-2xl font-bold">EduPanel</h2>
+      <p class="text-stone-500 text-sm mt-1">Admin Panel</p>
+    </div>
+
+    <nav class="flex flex-col gap-2 flex-1">
+      <a href="admin-dashboard.html" class="px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 transition">Dashboard</a>
+      <a href="approvals.html" class="px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 transition flex items-center justify-between">
+        <span>Approvals</span>
+        <span id="pendingBadge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+      </a>
+      <a href="users.html" class="px-4 py-3 rounded-xl bg-orange-500 text-white transition">Users</a>
+      <a href="admin-student.html" class="px-4 py-3 rounded-xl text-stone-300 hover:bg-stone-800 transition">Manage Students</a>
+    </nav>
+
+    <button onclick="logout()" class="mt-6 bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-3 transition">
+      Logout
+    </button>
+  </aside>
+
+  <main class="flex-1 p-6 space-y-6">
+    <div class="bg-stone-900 border border-stone-800 rounded-2xl p-6 flex justify-between items-center">
+      <div>
+        <h1 class="syne text-2xl font-bold text-white">Users Management</h1>
+        <p class="text-stone-400 mt-1">Manage roles, statuses, and accounts</p>
+      </div>
+      <div class="text-sm text-stone-400">
+        Logged in as <span id="adminName" class="text-orange-400 font-semibold"></span>
+      </div>
+    </div>
+
+    <div id="messageBox" class="hidden rounded-xl p-4 text-sm"></div>
+
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+            <tr>
+              <th class="px-6 py-4">#</th>
+              <th class="px-6 py-4">Username</th>
+              <th class="px-6 py-4">Role</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Date</th>
+              <th class="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody" class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const baseUrl = "/api/admin/users";
+    let users = [];
+
+    function requireAdmin() {
+      const token = localStorage.getItem("token");
+      const role = (localStorage.getItem("role") || "").toUpperCase();
+      if (!token || role !== "ADMIN") {
+        localStorage.clear();
+        window.location.replace("index.html");
+        return false;
+      }
+      return true;
+    }
+
+    function authHeaders(json = false) {
+      const headers = {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      };
+      if (json) headers["Content-Type"] = "application/json";
+      return headers;
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    function showMessage(text, type = "success") {
+      const box = document.getElementById("messageBox");
+      box.className = "rounded-xl p-4 text-sm";
+      if (type === "success") {
+        box.classList.add("bg-green-100", "text-green-800");
+      } else {
+        box.classList.add("bg-red-100", "text-red-800");
+      }
+      box.textContent = text;
+      box.classList.remove("hidden");
+    }
+
+    async function safeJson(response) {
+      const text = await response.text();
+      if (!text) return {};
+      try {
+        return JSON.parse(text);
+      } catch {
+        return {};
+      }
+    }
+
+    function extractError(data, fallback) {
+      return data.message || data.error || fallback;
+    }
+
+    function normalizeRole(role) {
+      if (role === "PENDING_ADMIN" || role === "ADMIN") return "ADMIN";
+      return "STUDENT";
+    }
+
+    function getStatus(role) {
+      return (role || "").startsWith("PENDING") ? "Pending" : "Active";
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      return new Date(value).toLocaleString();
+    }
+
+    function renderUsers() {
+      const tbody = document.getElementById("usersTableBody");
+      tbody.innerHTML = "";
+
+      const pendingCount = users.filter(user => (user.role || "").startsWith("PENDING")).length;
+      document.getElementById("pendingBadge").textContent = pendingCount;
+
+      if (!users.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-gray-500">No users found</td>
+          </tr>
+        `;
+        return;
+      }
+
+      users.forEach((user, index) => {
+        const zebra = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+        const status = getStatus(user.role);
+        const selectedRole = normalizeRole(user.role);
+
+        tbody.innerHTML += `
+          <tr class="${zebra} hover:bg-blue-50 transition">
+            <td class="px-6 py-4">${index + 1}</td>
+            <td class="px-6 py-4 font-medium text-gray-800">${user.username ?? "-"}</td>
+            <td class="px-6 py-4">
+              <select onchange="changeRole('${user.id}', this.value)" class="border rounded-lg px-3 py-2 bg-white">
+                <option value="STUDENT" ${selectedRole === "STUDENT" ? "selected" : ""}>Student</option>
+                <option value="ADMIN" ${selectedRole === "ADMIN" ? "selected" : ""}>Admin</option>
+              </select>
+            </td>
+            <td class="px-6 py-4">
+              <span class="${status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} px-3 py-1 rounded-full text-xs font-semibold">
+                ${status}
+              </span>
+            </td>
+            <td class="px-6 py-4">${formatDate(user.createdAt)}</td>
+            <td class="px-6 py-4">
+              <button onclick="deleteUser('${user.id}', '${user.username}')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function loadUsers() {
+      const response = await fetch(baseUrl, {
+        headers: authHeaders()
+      });
+      const data = await safeJson(response);
+
+      if (!response.ok) {
+        showMessage(extractError(data, "Failed to load users"), "error");
+        return;
+      }
+
+      users = Array.isArray(data) ? data : [];
+      renderUsers();
+    }
+
+    async function changeRole(id, role) {
+      const response = await fetch(`${baseUrl}/${id}/role`, {
+        method: "PUT",
+        headers: authHeaders(true),
+        body: JSON.stringify({ role })
+      });
+      const data = await safeJson(response);
+
+      if (!response.ok) {
+        showMessage(extractError(data, "Failed to update role"), "error");
+        await loadUsers();
+        return;
+      }
+
+      users = users.map(user => {
+        if (user.id === id) {
+          return { ...user, role };
+        }
+        return user;
+      });
+
+      renderUsers();
+      showMessage("Role updated successfully");
+    }
+
+    async function deleteUser(id, username) {
+      const confirmed = confirm(`Are you sure you want to delete ${username}?`);
+      if (!confirmed) return;
+
+      const response = await fetch(`${baseUrl}/${id}`, {
+        method: "DELETE",
+        headers: authHeaders()
+      });
+
+      if (!response.ok && response.status !== 204) {
+        const data = await safeJson(response);
+        showMessage(extractError(data, "Failed to delete user"), "error");
+        return;
+      }
+
+      users = users.filter(user => user.id !== id);
+      renderUsers();
+      showMessage("User deleted successfully");
+    }
+
+    if (requireAdmin()) {
+      document.getElementById("adminName").textContent = localStorage.getItem("username") || "Admin";
+      loadUsers();
+    }
+  </script>
+</body>
+</html>
