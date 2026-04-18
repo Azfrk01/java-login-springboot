@@ -24,7 +24,8 @@
 <aside class="w-56 min-h-screen bg-stone-900 border-r border-stone-800 flex flex-col py-6 px-3 gap-1 z-10 flex-shrink-0">
   <div class="flex items-center gap-3 px-3 mb-6">
     <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
     </div>
     <span class="syne text-white font-bold text-lg tracking-tight">EduPanel</span>
   </div>
@@ -37,19 +38,19 @@
   </nav>
   <button onclick="logout()" class="nav-item w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 mt-2">Logout</button>
 </aside>
-
 <main class="flex-1 flex flex-col min-w-0 relative z-10">
   <header class="sticky top-0 z-20 bg-stone-950/80 backdrop-blur border-b border-stone-800/60 px-6 py-4 flex items-center gap-4">
     <div class="flex-1">
       <h2 class="syne text-white font-bold text-lg leading-tight">Admin Dashboard</h2>
       <p class="text-stone-500 text-xs">Overview of students and activity</p>
     </div>
-    <div class="text-right">
-      <p id="navUsername" class="text-white text-sm font-semibold syne"></p>
-      <p class="text-stone-500 text-xs">Administrator</p>
-    </div>
+    <a href="profile.html" class="nav-item flex items-center justify-end space-x-2">
+      <div class="text-right">
+        <p id="navUsername" class="text-white text-sm font-semibold syne"></p>
+        <p class="text-stone-500 text-xs">Administrator</p>
+      </div>
+    </a>
   </header>
-
   <div class="p-6 space-y-6 overflow-y-auto">
     <div class="card flex items-center justify-between">
       <div>
@@ -58,7 +59,6 @@
       </div>
       <button onclick="window.location.href='admin-student.html'" class="btn-primary">Open Student Management</button>
     </div>
-
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       <div class="card"><p class="text-stone-400 text-sm">Total Students</p><h2 id="totalStudents" class="text-3xl font-bold mt-2">0</h2></div>
       <div class="card"><p class="text-stone-400 text-sm">Average CGPA</p><h2 id="avgCgpa" class="text-3xl font-bold mt-2">0.00</h2></div>
@@ -71,7 +71,6 @@
     <h2 id="pendingApprovals" class="text-3xl font-bold">0</h2>
   </div>
     </div>
-
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
       <div class="card">
         <div class="flex items-center justify-between mb-4">
@@ -80,7 +79,6 @@
         </div>
         <div id="branchBreakdown" class="space-y-4 text-sm text-stone-300"></div>
       </div>
-
       <div class="card">
         <div class="flex items-center justify-between mb-4">
           <h3 class="syne text-white text-lg font-bold">Recent Students</h3>

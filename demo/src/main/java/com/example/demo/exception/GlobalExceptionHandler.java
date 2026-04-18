@@ -11,17 +11,24 @@ public class GlobalExceptionHandler{
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex){
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->errors.put(error.getField(), error.getDefaultMessage())
-        );
+        Map<String, String> errors =new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return errors;
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleIllegalArgumentException(IllegalArgumentException ex){
+        Map<String, String> error =new HashMap<>();
+        error.put("error",ex.getMessage());
+        return error;
     }
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Map<String, String> handleRuntimeException(RuntimeException ex){
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        Map<String, String> error= new HashMap<>();
+        error.put("error",ex.getMessage());
         return error;
     }
 }
